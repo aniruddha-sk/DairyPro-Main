@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+
+{% block title %}Platform Monitoring{% endblock %}
+
+{% block head %}
+<style>
+    .monitoring-page .monitoring-hero {
+        background: linear-gradient(135deg, #172554, #1d4ed8);
+        color: #fff;
+        border-radius: 18px;
+        padding: 24px;
+        margin-bottom: 22px;
+    }
+    .monitoring-page .monitoring-hero p {
+        color: rgba(255,255,255,.78);
+        margin-bottom: 0;
+    }
+    .monitoring-page .monitor-card {
+        border: 1px solid var(--bs-border-color, #e5e7eb);
+        border-radius: 15px;
+        background: var(--bs-body-bg, #fff);
+        padding: 18px;
+        height: 100%;
+    }
+    .monitoring-page .monitor-card .monitor-label {
+        color: var(--bs-secondary-color, #6b7280);
+        font-size: .84rem;
+        margin-bottom: 7px;
+    }
+    .monitoring-page .monitor-card .monitor-value {
+        font-size: 1.8rem;
+        line-height: 1.2;
+        font-weight: 750;
+        margin: 0;
+    }
+    .monitoring-page .monitor-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bs-tertiary-bg, #f3f4f6);
+        font-size: 1.15rem;
+    }
+    .monitoring-page .monitor-panel {
+        border: 1px solid var(--bs-border-color, #e5e7eb);
+        border-radius: 15px;
+        background: var(--bs-body-bg, #fff);
+        overflow: hidden;
+        height: 100%;
+    }
+    .monitoring-page .monitor-panel-header {
+        padding: 17px 20px;
+        border-bottom: 1px solid var(--bs-border-color, #e5e7eb);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+    .monitoring-page .monitor-panel-body { padding: 18px 20px; }
+    .monitoring-page .event-table th {
+        white-space: nowrap;
+        color: var(--bs-secondary-color, #6b7280);
+        font-size: .76rem;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        font-weight: 700;
+    }
+    .monitoring-page .event-table td { vertical-align: middle; }
+    .monitoring-page .severity-badge {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 50px;
+        padding: 5px 10px;
+        font-size: .72rem;
+        font-weight: 750;
+        letter-spacing: .025em;
+    }
+    .monitoring-page .severity-critical { color: #b91c1c; background: #fee2e2; }
+    .monitoring-page .severity-warning { color: #92400e; background: #fef3c7; }
+    .monitoring-page .severity-info { color: #1d4ed8; background: #dbeafe; }
+    .monitoring-page .quick-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 13px 0;
+        text-decoration: none;
+        color: inherit;
+        border-bottom: 1px solid var(--bs-border-color, #e5e7eb);
+    }
+    .monitoring-page .quick-link:last-child { border-bottom: 0; }
+    .monitoring-page .quick-link:hover { color: var(--bs-primary, #2563eb); }
+    .monitoring-page .quick-link small { display: block; color: var(--bs-secondary-color, #6b7280); }
+    .monitoring-page .empty-state {
+        text-align: center;
+        padding: 34px 16px;
+        color: var(--bs-secondary-color, #6b7280);
+    }
+    .monitoring-page .empty-state i { font-size: 2rem; display: block; margin-bottom: 10px; }
+    @media (max-width: 575.98px) {
+        .monitoring-page .monitoring-hero { padding: 19px; }
+        .monitoring-page .monitor-card { padding: 15px; }
+        .monitoring-page .monitor-card .monitor-value { font-size: 1.55rem; }
+        .monitoring-page .monitor-panel-header { align-items: flex-start; flex-direction: column; }
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+<li class="breadcrumb-item active" aria-current="page">Platform Monitoring</li>
+{% endblock %}
+
+{% block content %}
+<div class="monitoring-page">
+
+    <div class="monitoring-hero">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div>
+                <div class="small text-uppercase fw-semibold mb-2" style="letter-spacing:.12em;">
+                    DairyMitr Control Center
+                </div>
+                <h2 class="mb-2 fw-bold">Platform Monitoring</h2>
+                <p>Security events, platform activity and email alert delivery in one place.</p>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{{ url_for('monitoring_events') }}" class="btn btn-light">
+                    <i class="fas fa-list-ul me-1"></i> All Events
+                </a>
+                <a href="{{ url_for('monitoring_settings') }}" class="btn btn-outline-light">
+                    <i class="fas fa-sliders-h me-1"></i> Settings
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+            <div class="monitor-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="monitor-label">Critical Alerts Today</div>
+                        <p class="monitor-value text-danger">{{ monitoring_stats.get('critical_today', 0) or 0 }}</p>
+                    </div>
+                    <span class="monitor-icon text-danger"><i class="fas fa-shield-alt"></i></span>
+                </div>
+                <small class="text-muted">Critical events since midnight</small>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="monitor-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="monitor-label">Warnings Today</div>
+                        <p class="monitor-value text-warning">{{ monitoring_stats.get('warnings_today', 0) or 0 }}</p>
+                    </div>
+                    <span class="monitor-icon text-warning"><i class="fas fa-exclamation-triangle"></i></span>
+                </div>
+                <small class="text-muted">Events requiring attention</small>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="monitor-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="monitor-label">Security Events Today</div>
+                        <p class="monitor-value">{{ monitoring_stats.get('login_security_today', 0) or 0 }}</p>
+                    </div>
+                    <span class="monitor-icon text-primary"><i class="fas fa-user-lock"></i></span>
+                </div>
+                <small class="text-muted">Login, password and OTP events</small>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="monitor-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="monitor-label">Events in Last 30 Days</div>
+                        <p class="monitor-value">{{ monitoring_stats.get('total_events', 0) or 0 }}</p>
+                    </div>
+                    <span class="monitor-icon text-success"><i class="fas fa-chart-line"></i></span>
+                </div>
+                <small class="text-muted">Recorded monitoring events</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-lg-7">
+            <section class="monitor-panel">
+                <div class="monitor-panel-header">
+                    <div>
+                        <h5 class="mb-1 fw-bold">Recent Monitoring Events</h5>
+                        <small class="text-muted">Latest events received by the monitoring engine</small>
+                    </div>
+                    <a href="{{ url_for('monitoring_events') }}" class="btn btn-sm btn-outline-primary">
+                        View All <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover event-table mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-3">Event</th>
+                                <th>Severity</th>
+                                <th>Account / Dairy</th>
+                                <th class="pe-3">Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for event in recent_events %}
+                            <tr>
+                                <td class="ps-3">
+                                    <div class="fw-semibold">{{ event.event_title }}</div>
+                                    <small class="text-muted">{{ event.event_type }}</small>
+                                </td>
+                                <td>
+                                    {% set level = (event.severity or 'INFO')|upper %}
+                                    <span class="severity-badge severity-{{ level|lower }}">{{ level }}</span>
+                                </td>
+                                <td>
+                                    <div>{{ event.actor_email or '—' }}</div>
+                                    {% if event.dairy_name %}
+                                        <small class="text-muted">{{ event.dairy_name }}</small>
+                                    {% elif event.source %}
+                                        <small class="text-muted">{{ event.source }}</small>
+                                    {% endif %}
+                                </td>
+                                <td class="pe-3 text-nowrap">
+                                    <small>
+                                        {% if event.created_at %}
+                                            {{ event.created_at.strftime('%d %b %Y, %I:%M %p') }}
+                                        {% else %}—{% endif %}
+                                    </small>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4">
+                                    <div class="empty-state">
+                                        <i class="fas fa-shield-alt"></i>
+                                        <strong>No monitoring events yet</strong>
+                                        <div class="small mt-1">Events will appear here when the applications send monitoring data.</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-5">
+            <section class="monitor-panel mb-3">
+                <div class="monitor-panel-header">
+                    <div>
+                        <h5 class="mb-1 fw-bold">Email Alert Delivery</h5>
+                        <small class="text-muted">Last 30 days</small>
+                    </div>
+                    <i class="fas fa-envelope-open-text text-primary fs-4"></i>
+                </div>
+                <div class="monitor-panel-body">
+                    <div class="row g-3 text-center">
+                        <div class="col-4">
+                            <div class="h3 fw-bold text-success mb-1">{{ email_stats.get('sent', 0) or 0 }}</div>
+                            <small class="text-muted">Sent</small>
+                        </div>
+                        <div class="col-4">
+                            <div class="h3 fw-bold text-danger mb-1">{{ email_stats.get('failed', 0) or 0 }}</div>
+                            <small class="text-muted">Failed</small>
+                        </div>
+                        <div class="col-4">
+                            <div class="h3 fw-bold text-secondary mb-1">{{ email_stats.get('skipped', 0) or 0 }}</div>
+                            <small class="text-muted">Skipped</small>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="small text-muted mb-1">Alert recipient</div>
+                    <div class="fw-semibold text-break">{{ monitoring_email or 'Not configured' }}</div>
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <a href="{{ url_for('monitoring_email_history') }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-history me-1"></i> Email History
+                        </a>
+                        <a href="{{ url_for('monitoring_settings') }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-cog me-1"></i> Configure
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="monitor-panel">
+                <div class="monitor-panel-header">
+                    <h5 class="mb-0 fw-bold">Monitoring Shortcuts</h5>
+                </div>
+                <div class="monitor-panel-body py-1">
+                    <a class="quick-link" href="{{ url_for('monitoring_events') }}">
+                        <span><strong>Security & Activity Events</strong><small>Search and filter recorded events</small></span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <a class="quick-link" href="{{ url_for('monitoring_email_history') }}">
+                        <span><strong>Email Delivery History</strong><small>Review sent, failed and skipped alerts</small></span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <a class="quick-link" href="{{ url_for('monitoring_settings') }}">
+                        <span><strong>Alert Preferences</strong><small>Recipient and severity preferences</small></span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="alert alert-info d-flex align-items-start gap-2 mb-0" role="alert">
+        <i class="fas fa-info-circle mt-1"></i>
+        <div class="small">
+            <strong>Monitoring coverage:</strong> This page displays events that have actually been recorded.
+            DairyMitr registration, owner login, OTP, vendor, staff and milk-collection routes must send their
+            events to the SuperAdmin monitoring API before those activities can appear here.
+            Server uptime, CPU/RAM and disk monitoring also require external health checks or scheduled monitoring.
+        </div>
+    </div>
+</div>
+{% endblock %}

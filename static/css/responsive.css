@@ -1,0 +1,767 @@
+
+/* =========================================================
+   DairyMitr SuperAdmin
+   File: responsive.css
+   Responsive Design - Desktop, Tablet & Mobile
+========================================================= */
+
+
+/* =========================================================
+   LARGE DESKTOP (1400px and above)
+========================================================= */
+
+@media (min-width: 1400px) {
+
+    .page-container,
+    #pageContainer {
+        max-width: 1600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .dashboard-stats-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .management-stats-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+
+/* =========================================================
+   DESKTOP & LAPTOP (1200px and below)
+========================================================= */
+
+@media (max-width: 1200px) {
+
+    .dashboard-stats-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .management-stats-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .dashboard-charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dairy-details-grid,
+    .user-details-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+/* =========================================================
+   TABLET LANDSCAPE (992px and below)
+========================================================= */
+
+@media (max-width: 992px) {
+
+    /* Sidebar */
+
+    .sidebar {
+        width: 260px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 1050;
+    }
+
+    .sidebar.show,
+    .sidebar.active,
+    .app-wrapper.sidebar-open .sidebar {
+        transform: translateX(0);
+    }
+
+    .sidebar-overlay,
+    #sidebarOverlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.45);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 1040;
+    }
+
+    .sidebar-overlay.show,
+    #sidebarOverlay.show,
+    .app-wrapper.sidebar-open .sidebar-overlay,
+    .app-wrapper.sidebar-open #sidebarOverlay {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Main Content */
+
+    .main-wrapper,
+    .main-content,
+    #mainContent {
+        margin-left: 0 !important;
+        width: 100%;
+    }
+
+    #sidebarToggleBtn {
+        display: inline-flex;
+    }
+
+    #sidebarCloseBtn {
+        display: inline-flex;
+    }
+
+    /* Dashboard */
+
+    .dashboard-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .management-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-access-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* Page Layout */
+
+    .page-header {
+        align-items: flex-start;
+    }
+
+    .page-header-content {
+        min-width: 0;
+    }
+
+    .page-header-actions {
+        flex-wrap: wrap;
+    }
+
+    /* Tables */
+
+    .management-panel,
+    .recent-dairies-panel {
+        overflow: hidden;
+    }
+
+    .management-table-wrapper,
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .management-table,
+    .dashboard-table {
+        min-width: 750px;
+    }
+
+    /* Details */
+
+    .dairy-profile-layout,
+    .user-profile-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .dairy-details-grid,
+    .user-details-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* Login */
+
+    .login-brand-section {
+        padding: 35px;
+    }
+
+    .login-form-section {
+        padding: 35px;
+    }
+}
+
+
+/* =========================================================
+   TABLET PORTRAIT (768px and below)
+========================================================= */
+
+@media (max-width: 768px) {
+
+    /* General */
+
+    body {
+        font-size: 14px;
+    }
+
+    .main-wrapper,
+    .main-content,
+    #mainContent {
+        padding: 0;
+    }
+
+    .page-container,
+    #pageContainer {
+        padding: 20px 16px;
+    }
+
+    /* Navbar */
+
+    .top-navbar {
+        padding: 12px 16px;
+    }
+
+    .navbar-brand {
+        font-size: 17px;
+    }
+
+    .navbar-actions {
+        gap: 8px;
+    }
+
+    /* Page Header */
+
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+        margin-bottom: 22px;
+    }
+
+    .page-header-content {
+        width: 100%;
+    }
+
+    .page-header-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .page-title {
+        font-size: 22px;
+    }
+
+    .page-description {
+        font-size: 13px;
+    }
+
+    /* Dashboard Stats */
+
+    .dashboard-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .dashboard-stat-card {
+        padding: 16px;
+    }
+
+    .dashboard-stat-body {
+        font-size: 24px;
+    }
+
+    .dashboard-stat-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 17px;
+    }
+
+    /* Management Stats */
+
+    .management-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .management-stat-card {
+        padding: 15px;
+    }
+
+    /* Charts */
+
+    .dashboard-charts-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .dashboard-panel {
+        padding: 16px;
+    }
+
+    .dashboard-chart-container {
+        min-height: 240px;
+    }
+
+    .verification-chart-container {
+        min-height: 220px;
+    }
+
+    /* Quick Access */
+
+    .quick-access-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .quick-access-card {
+        padding: 15px;
+    }
+
+    /* Search Toolbar */
+
+    .management-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .search-form {
+        width: 100%;
+    }
+
+    .search-input-wrapper {
+        width: 100%;
+    }
+
+    .search-input {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .toolbar-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    /* Tables */
+
+    .management-table,
+    .dashboard-table {
+        min-width: 700px;
+    }
+
+    .management-panel-header {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    /* Details */
+
+    .dairy-details-grid,
+    .user-details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dairy-information-grid,
+    .user-information-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Analytics */
+
+    .analytics-charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Settings */
+
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Pagination */
+
+    .management-pagination {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .pagination {
+        flex-wrap: wrap;
+    }
+
+    /* Login */
+
+    .login-page {
+        grid-template-columns: 1fr;
+        min-height: 100vh;
+    }
+
+    .login-brand-section {
+        display: none;
+    }
+
+    .login-form-section {
+        width: 100%;
+        min-height: 100vh;
+        padding: 30px 22px;
+    }
+
+    .login-form-wrapper {
+        width: 100%;
+        max-width: 420px;
+        margin: auto;
+    }
+
+    .login-mobile-brand {
+        display: flex;
+    }
+
+    /* Footer */
+
+    .app-footer {
+        padding: 15px;
+        text-align: center;
+    }
+}
+
+
+/* =========================================================
+   MOBILE (576px and below)
+========================================================= */
+
+@media (max-width: 576px) {
+
+    /* Main Layout */
+
+    .page-container,
+    #pageContainer {
+        padding: 16px 12px;
+    }
+
+    /* Header */
+
+    .page-title {
+        font-size: 20px;
+    }
+
+    .page-eyebrow {
+        font-size: 10px;
+    }
+
+    .page-header-actions {
+        gap: 8px;
+    }
+
+    .page-header-actions .btn,
+    .page-header-actions button {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+
+    /* Dashboard Cards */
+
+    .dashboard-stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .dashboard-stat-card {
+        padding: 13px 11px;
+    }
+
+    .dashboard-stat-top {
+        gap: 8px;
+    }
+
+    .dashboard-stat-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 15px;
+    }
+
+    .stat-label {
+        font-size: 11px;
+    }
+
+    .dashboard-stat-body {
+        font-size: 21px;
+    }
+
+    .dashboard-stat-footer {
+        font-size: 10px;
+    }
+
+    /* Management Cards */
+
+    .management-stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .management-stat-card {
+        padding: 12px;
+    }
+
+    .management-stat-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+    .management-stat-info {
+        font-size: 12px;
+    }
+
+    /* Panels */
+
+    .dashboard-panel,
+    .management-panel {
+        border-radius: 12px;
+    }
+
+    .dashboard-panel-header,
+    .management-panel-header {
+        padding-bottom: 12px;
+    }
+
+    .dashboard-panel-title,
+    .management-panel-title {
+        font-size: 15px;
+    }
+
+    /* Charts */
+
+    .dashboard-chart-container {
+        min-height: 210px;
+    }
+
+    .verification-chart-container {
+        min-height: 190px;
+    }
+
+    /* Quick Access */
+
+    .quick-access-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .quick-access-card {
+        padding: 12px;
+    }
+
+    .quick-access-icon {
+        width: 35px;
+        height: 35px;
+    }
+
+    .quick-access-card h3,
+    .quick-access-card h4 {
+        font-size: 12px;
+    }
+
+    /* Search */
+
+    .search-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-input-wrapper {
+        width: 100%;
+    }
+
+    .btn-search {
+        width: 100%;
+    }
+
+    /* Table */
+
+    .management-table,
+    .dashboard-table {
+        min-width: 650px;
+    }
+
+    .management-table th,
+    .management-table td,
+    .dashboard-table th,
+    .dashboard-table td {
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    /* Profile */
+
+    .dairy-profile-card,
+    .user-profile-card {
+        padding: 16px;
+    }
+
+    .dairy-profile-avatar,
+    .user-profile-avatar {
+        width: 65px;
+        height: 65px;
+        font-size: 25px;
+    }
+
+    /* Notices */
+
+    .management-notice {
+        align-items: flex-start;
+        padding: 12px;
+    }
+
+    /* Pagination */
+
+    .pagination {
+        gap: 4px;
+    }
+
+    .page-link {
+        min-width: 32px;
+        padding: 7px 9px;
+        font-size: 12px;
+    }
+
+    /* Login */
+
+    .login-form-section {
+        padding: 25px 18px;
+    }
+
+    .login-heading {
+        font-size: 24px;
+    }
+
+    .login-mobile-logo {
+        width: 55px;
+        height: 55px;
+    }
+
+    .login-submit-btn {
+        min-height: 46px;
+    }
+
+    /* 404 */
+
+    .error-code {
+        font-size: 75px;
+    }
+
+    .error-title {
+        font-size: 22px;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE (400px and below)
+========================================================= */
+
+@media (max-width: 400px) {
+
+    .page-container,
+    #pageContainer {
+        padding: 14px 10px;
+    }
+
+    .dashboard-stats-grid,
+    .management-stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .dashboard-stat-card,
+    .management-stat-card {
+        padding: 10px;
+    }
+
+    .dashboard-stat-body {
+        font-size: 19px;
+    }
+
+    .stat-label {
+        font-size: 10px;
+    }
+
+    .quick-access-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .page-title {
+        font-size: 18px;
+    }
+
+    .navbar-brand {
+        font-size: 15px;
+    }
+
+    .login-form-section {
+        padding: 20px 14px;
+    }
+
+    .login-heading {
+        font-size: 22px;
+    }
+}
+
+
+/* =========================================================
+   LANDSCAPE MOBILE
+========================================================= */
+
+@media (max-height: 500px) and (max-width: 992px) {
+
+    .sidebar {
+        overflow-y: auto;
+        height: 100vh;
+    }
+
+    .login-form-section {
+        min-height: auto;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .login-page {
+        min-height: auto;
+    }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY & TOUCH SUPPORT
+========================================================= */
+
+@media (hover: none) {
+
+    .dashboard-stat-card:hover,
+    .management-stat-card:hover,
+    .quick-access-card:hover {
+        transform: none;
+    }
+
+    button,
+    .btn,
+    .page-link,
+    .table-action-btn {
+        min-height: 36px;
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

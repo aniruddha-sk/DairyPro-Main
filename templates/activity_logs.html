@@ -1,0 +1,527 @@
+
+{% extends "base.html" %}
+
+{% block title %}Activity Logs{% endblock %}
+
+{% block breadcrumb %}Activity Logs{% endblock %}
+
+{% block content %}
+
+<!-- =====================================================
+     PAGE HEADER
+===================================================== -->
+
+<div class="page-header">
+
+    <div class="page-header-content">
+
+        <span class="page-eyebrow">SECURITY & MONITORING</span>
+
+        <h2>Activity Logs</h2>
+
+        <p>
+            Monitor account activities and platform events
+            across DairyMitr.
+        </p>
+
+    </div>
+
+    <div class="page-header-actions">
+
+        <span class="total-records-badge">
+
+            <i class="bi bi-activity"></i>
+
+            Activity Monitor
+
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     ACTIVITY STATISTICS
+===================================================== -->
+
+<div class="management-stats-grid">
+
+
+    <!-- TOTAL ACTIVITIES -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-blue">
+
+            <i class="bi bi-activity"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Total Activities</span>
+
+            <h3>{{ activity_stats.total | default(0) }}</h3>
+
+            <p>Recorded platform activities</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- LOGIN ACTIVITIES -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-green">
+
+            <i class="bi bi-box-arrow-in-right"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Login Activities</span>
+
+            <h3>{{ activity_stats.logins | default(0) }}</h3>
+
+            <p>Recorded login events</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACCOUNT ACTIVITIES -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-purple">
+
+            <i class="bi bi-person-gear"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Account Activities</span>
+
+            <h3>{{ activity_stats.account_activities | default(0) }}</h3>
+
+            <p>Account-related events</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- OTHER ACTIVITIES -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-orange">
+
+            <i class="bi bi-clock-history"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Other Activities</span>
+
+            <h3>{{ activity_stats.other | default(0) }}</h3>
+
+            <p>Other recorded events</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     ACTIVITY HISTORY
+===================================================== -->
+
+<div class="management-panel activity-records-panel">
+
+
+    <!-- PANEL HEADER -->
+
+    <div class="management-panel-header">
+
+        <div class="management-header-info">
+
+            <h3>Recent Activity History</h3>
+
+            <p>
+                Review recorded events from the DairyMitr platform.
+            </p>
+
+        </div>
+
+        <span class="records-count">
+
+            <i class="bi bi-list-ul"></i>
+
+            {{ activities | length }} Records
+
+        </span>
+
+    </div>
+
+
+    <!-- SEARCH TOOLBAR -->
+
+    <div class="management-toolbar">
+
+        <form method="GET"
+              action="{{ url_for('activity_logs') }}"
+              class="search-form"
+              id="activitySearchForm">
+
+            <div class="search-input-wrapper">
+
+                <i class="bi bi-search search-icon"></i>
+
+                <input
+                    type="text"
+                    name="search"
+                    id="activitySearchInput"
+                    class="search-input"
+                    placeholder="Search user or activity..."
+                    value="{{ search or '' }}"
+                    autocomplete="off"
+                >
+
+                {% if search %}
+
+                    <a href="{{ url_for('activity_logs') }}"
+                       class="search-clear-btn"
+                       title="Clear search">
+
+                        <i class="bi bi-x-lg"></i>
+
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+
+            <button type="submit" class="btn-search">
+
+                <i class="bi bi-search"></i>
+
+                Search
+
+            </button>
+
+        </form>
+
+
+        <div class="toolbar-right">
+
+            <span class="table-info-text">
+
+                <i class="bi bi-shield-check"></i>
+
+                Security activity records
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACTIVITY TABLE -->
+
+    {% if activities %}
+
+    <div class="table-responsive">
+
+        <table class="table management-table" id="activityLogsTable">
+
+            <thead>
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>User Information</th>
+
+                    <th>Activity</th>
+
+                    <th>Activity Type</th>
+
+                    <th>IP Address</th>
+
+                    <th>Date & Time</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for activity in activities %}
+
+                <tr>
+
+
+                    <!-- SERIAL NUMBER -->
+
+                    <td>
+
+                        <span class="table-serial">
+
+                            {{ loop.index }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- USER INFORMATION -->
+
+                    <td>
+
+                        <div class="dairy-table-info">
+
+                            <div class="dairy-table-avatar">
+
+                                <i class="bi bi-person"></i>
+
+                            </div>
+
+                            <div class="dairy-table-details">
+
+                                <strong>
+
+                                    {{ activity.user_name or 'Unknown User' }}
+
+                                </strong>
+
+                                <span>
+
+                                    {{ activity.email or 'Not available' }}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- ACTIVITY DESCRIPTION -->
+
+                    <td>
+
+                        <div class="activity-description">
+
+                            <strong>
+
+                                {{ activity.description or 'Activity recorded' }}
+
+                            </strong>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- ACTIVITY TYPE -->
+
+                    <td>
+
+                        {% if activity.activity_type == 'login' %}
+
+                            <span class="activity-type-badge activity-login">
+
+                                <i class="bi bi-box-arrow-in-right"></i>
+
+                                Login
+
+                            </span>
+
+                        {% elif activity.activity_type == 'logout' %}
+
+                            <span class="activity-type-badge activity-logout">
+
+                                <i class="bi bi-box-arrow-right"></i>
+
+                                Logout
+
+                            </span>
+
+                        {% elif activity.activity_type == 'account' %}
+
+                            <span class="activity-type-badge activity-account">
+
+                                <i class="bi bi-person-gear"></i>
+
+                                Account
+
+                            </span>
+
+                        {% elif activity.activity_type == 'security' %}
+
+                            <span class="activity-type-badge activity-security">
+
+                                <i class="bi bi-shield-lock"></i>
+
+                                Security
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="activity-type-badge">
+
+                                {{ activity.activity_type or 'Other' }}
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- IP ADDRESS -->
+
+                    <td>
+
+                        <span class="activity-ip-address">
+
+                            <i class="bi bi-globe"></i>
+
+                            {{ activity.ip_address or 'Not recorded' }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- DATE AND TIME -->
+
+                    <td>
+
+                        <span class="subscription-date">
+
+                            {% if activity.created_at %}
+
+                                {{ activity.created_at }}
+
+                            {% else %}
+
+                                Not available
+
+                            {% endif %}
+
+                        </span>
+
+                    </td>
+
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    {% else %}
+
+
+    <!-- EMPTY STATE -->
+
+    <div class="empty-state">
+
+        <div class="empty-icon">
+
+            <i class="bi bi-clock-history"></i>
+
+        </div>
+
+        <h4>No Activity Records Found</h4>
+
+        <p>
+
+            {% if search %}
+
+                No activity records match your search.
+
+            {% else %}
+
+                Activity log records are not available yet.
+
+            {% endif %}
+
+        </p>
+
+
+        {% if search %}
+
+            <a href="{{ url_for('activity_logs') }}"
+               class="btn-outline-primary">
+
+                <i class="bi bi-arrow-counterclockwise"></i>
+
+                Clear Search
+
+            </a>
+
+        {% endif %}
+
+    </div>
+
+
+    {% endif %}
+
+
+</div>
+
+
+<!-- =====================================================
+     SECURITY NOTICE
+===================================================== -->
+
+<div class="management-notice">
+
+    <div class="notice-icon">
+
+        <i class="bi bi-shield-lock"></i>
+
+    </div>
+
+    <div class="notice-content">
+
+        <strong>Platform Activity Monitoring</strong>
+
+        <p>
+
+            Activity logs help monitor recorded account events
+            and security-related actions. Only information
+            actually captured by the application will be shown.
+            Historical events cannot be reconstructed if
+            logging was not enabled at that time.
+
+        </p>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

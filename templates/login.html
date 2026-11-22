@@ -1,0 +1,305 @@
+
+{% extends "base.html" %}
+
+{% block title %}Super Admin Login{% endblock %}
+
+{% block auth_content %}
+
+<div class="login-page">
+
+    <!-- LEFT BRANDING SECTION -->
+    <div class="login-brand-section">
+
+        <div class="login-brand-content">
+
+            <div class="login-brand-logo">
+                <img
+                    src="{{ url_for('static', filename='images/logo.png') }}"
+                    alt="DairyMitr Logo"
+                    onerror="this.style.display='none';"
+                >
+
+                <span class="login-brand-fallback">
+                    <i class="bi bi-droplet-fill"></i>
+                </span>
+            </div>
+
+            <h1>DairyMitr</h1>
+
+            <p class="login-brand-subtitle">
+                Super Admin Portal
+            </p>
+
+            <div class="login-brand-divider"></div>
+
+            <h2>
+                One Platform.<br>
+                Complete Control.
+            </h2>
+
+            <p class="login-brand-description">
+                Manage your entire DairyMitr ecosystem from
+                one centralized and secure administration
+                platform.
+            </p>
+
+            <div class="login-feature-list">
+
+                <div class="login-feature">
+                    <i class="bi bi-shield-check"></i>
+                    <span>Secure Administration</span>
+                </div>
+
+                <div class="login-feature">
+                    <i class="bi bi-buildings"></i>
+                    <span>Centralized Dairy Management</span>
+                </div>
+
+                <div class="login-feature">
+                    <i class="bi bi-graph-up-arrow"></i>
+                    <span>Real-time Platform Insights</span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="login-brand-footer">
+            © 2026 DairyMitr. All rights reserved.
+        </div>
+
+    </div>
+
+
+    <!-- RIGHT LOGIN SECTION -->
+    <div class="login-form-section">
+
+        <div class="login-form-wrapper">
+
+            <!-- MOBILE BRANDING -->
+            <div class="login-mobile-brand">
+
+                <div class="login-mobile-logo">
+                    <i class="bi bi-droplet-fill"></i>
+                </div>
+
+                <div>
+                    <h3>DairyMitr</h3>
+                    <span>SUPER ADMIN</span>
+                </div>
+
+            </div>
+
+
+            <!-- LOGIN HEADER -->
+            <div class="login-heading">
+
+                <span class="login-welcome-label">
+                    WELCOME BACK
+                </span>
+
+                <h2>Sign in to your account</h2>
+
+                <p>
+                    Enter your administrator credentials
+                    to access the control panel.
+                </p>
+
+            </div>
+
+
+            <!-- FLASH MESSAGES -->
+            <div class="login-flash-container">
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+
+                    {% if messages %}
+
+                        {% for category, message in messages %}
+
+                            <div class="alert alert-{{ category }} alert-dismissible fade show login-alert"
+                                 role="alert">
+
+                                {% if category == 'success' %}
+
+                                    <i class="bi bi-check-circle-fill"></i>
+
+                                {% elif category == 'danger' %}
+
+                                    <i class="bi bi-exclamation-circle-fill"></i>
+
+                                {% elif category == 'warning' %}
+
+                                    <i class="bi bi-exclamation-triangle-fill"></i>
+
+                                {% else %}
+
+                                    <i class="bi bi-info-circle-fill"></i>
+
+                                {% endif %}
+
+                                <span>{{ message }}</span>
+
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="alert"
+                                        aria-label="Close">
+                                </button>
+
+                            </div>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                {% endwith %}
+
+            </div>
+
+
+            <!-- LOGIN FORM -->
+            <form
+                action="{{ url_for('login') }}"
+                method="POST"
+                id="loginForm"
+                class="login-form"
+                autocomplete="on"
+            >
+
+                <!-- CSRF TOKEN -->
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+
+                <!-- EMAIL -->
+                <div class="login-form-group">
+
+                    <label for="loginEmail">
+                        Email Address
+                    </label>
+
+                    <div class="login-input-wrapper">
+
+                        <i class="bi bi-envelope login-input-icon"></i>
+
+                        <input
+                            type="email"
+                            id="loginEmail"
+                            name="email"
+                            class="login-input"
+                            placeholder="Enter your admin email"
+                            autocomplete="username"
+                            maxlength="255"
+                            required
+                            autofocus
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- PASSWORD -->
+                <div class="login-form-group">
+
+                    <div class="login-label-row">
+
+                        <label for="loginPassword">
+                            Password
+                        </label>
+
+                    </div>
+
+
+                    <div class="login-input-wrapper">
+
+                        <i class="bi bi-lock login-input-icon"></i>
+
+                        <input
+                            type="password"
+                            id="loginPassword"
+                            name="password"
+                            class="login-input"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle-btn"
+                            id="loginPasswordToggle"
+                            aria-label="Show password"
+                            aria-pressed="false"
+                        >
+
+                            <i class="bi bi-eye" id="passwordToggleIcon"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SECURITY NOTICE -->
+                <div class="login-security-notice">
+
+                    <i class="bi bi-shield-lock"></i>
+
+                    <span>
+                        This portal is restricted to authorized
+                        platform administrators only.
+                    </span>
+
+                </div>
+
+
+                <!-- SUBMIT BUTTON -->
+                <button
+                    type="submit"
+                    class="login-submit-btn"
+                    id="loginSubmitBtn"
+                >
+
+                    <span>Sign In to Dashboard</span>
+
+                    <i class="bi bi-arrow-right"></i>
+
+                </button>
+
+
+            </form>
+
+
+            <!-- LOGIN FOOTER -->
+            <div class="login-form-footer">
+
+                <div class="login-footer-divider"></div>
+
+                <div class="login-protected-label">
+
+                    <i class="bi bi-shield-check"></i>
+
+                    <span>Protected Admin Access</span>
+
+                </div>
+
+                <p>
+                    © 2026 DairyMitr Super Admin
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+{% endblock %}

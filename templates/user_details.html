@@ -1,0 +1,646 @@
+
+{% extends "base.html" %}
+
+{% block title %}User Details{% endblock %}
+
+{% block breadcrumb %}User Details{% endblock %}
+
+{% block content %}
+
+<!-- =====================================================
+     PAGE HEADER
+===================================================== -->
+
+<div class="page-header">
+
+    <div class="page-header-content">
+
+        <span class="page-eyebrow">USER MANAGEMENT</span>
+
+        <h2>User Details</h2>
+
+        <p>
+            Complete profile and account information.
+        </p>
+
+    </div>
+
+    <div class="page-header-actions">
+
+        <a href="{{ url_for('users') }}" class="btn-outline-primary">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back to Users
+
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     USER PROFILE CARD
+===================================================== -->
+
+<div class="user-profile-panel">
+
+    <div class="user-profile-main">
+
+        <div class="user-profile-avatar">
+
+            {% if role == 'Owner' %}
+
+                <i class="bi bi-building"></i>
+
+            {% elif role == 'Staff' %}
+
+                <i class="bi bi-person-badge"></i>
+
+            {% else %}
+
+                <i class="bi bi-person"></i>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="user-profile-info">
+
+            <span class="profile-label">USER ACCOUNT</span>
+
+            <h3>{{ user.name or 'Unknown User' }}</h3>
+
+            <p>
+
+                <i class="bi bi-envelope"></i>
+
+                {{ user.email or 'No email available' }}
+
+            </p>
+
+
+            <div class="user-profile-meta">
+
+                <span>
+
+                    <i class="bi bi-hash"></i>
+
+                    ID: {{ user.id }}
+
+                </span>
+
+
+                <span class="user-role-badge
+
+                    {% if role == 'Owner' %}
+                        role-owner
+                    {% elif role == 'Staff' %}
+                        role-staff
+                    {% else %}
+                        role-customer
+                    {% endif %}">
+
+                    {% if role == 'Owner' %}
+
+                        <i class="bi bi-building"></i>
+
+                    {% elif role == 'Staff' %}
+
+                        <i class="bi bi-person-badge"></i>
+
+                    {% else %}
+
+                        <i class="bi bi-person"></i>
+
+                    {% endif %}
+
+                    {{ role }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="user-profile-status">
+
+        {% if user.status in [1, true, '1', 'Active', 'active', 'Verified', 'verified'] %}
+
+            <span class="status-badge status-verified">
+
+                <i class="bi bi-check-circle-fill"></i>
+
+                Active
+
+            </span>
+
+        {% else %}
+
+            <span class="status-badge status-unverified">
+
+                <i class="bi bi-exclamation-circle-fill"></i>
+
+                Inactive / Unverified
+
+            </span>
+
+        {% endif %}
+
+        <span class="profile-status-note">
+            Current account status
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     USER INFORMATION GRID
+===================================================== -->
+
+<div class="user-details-grid">
+
+
+    <!-- BASIC INFORMATION -->
+
+    <div class="dairy-information-panel">
+
+        <div class="dairy-information-header">
+
+            <div class="dairy-information-icon icon-blue">
+
+                <i class="bi bi-person-vcard"></i>
+
+            </div>
+
+            <div>
+
+                <h3>Basic Information</h3>
+
+                <p>Personal and contact details</p>
+
+            </div>
+
+        </div>
+
+
+        <div class="dairy-information-list">
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">Full Name</span>
+
+                <strong>{{ user.name or 'Not available' }}</strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">Email Address</span>
+
+                <strong class="information-value">
+
+                    <i class="bi bi-envelope"></i>
+
+                    {{ user.email or 'Not available' }}
+
+                </strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">Phone Number</span>
+
+                <strong class="information-value">
+
+                    <i class="bi bi-telephone"></i>
+
+                    {{ user.phone or 'Not available' }}
+
+                </strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">User ID</span>
+
+                <strong>#{{ user.id }}</strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">Account Role</span>
+
+                <strong>{{ role }}</strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">Account Status</span>
+
+                {% if user.status in [1, true, '1', 'Active', 'active', 'Verified', 'verified'] %}
+
+                    <span class="status-badge status-verified">
+                        Active
+                    </span>
+
+                {% else %}
+
+                    <span class="status-badge status-unverified">
+                        Inactive / Unverified
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- DAIRY ASSOCIATION -->
+
+    <div class="dairy-information-panel">
+
+        <div class="dairy-information-header">
+
+            <div class="dairy-information-icon icon-green">
+
+                <i class="bi bi-building"></i>
+
+            </div>
+
+            <div>
+
+                <h3>Dairy Association</h3>
+
+                <p>Associated dairy account information</p>
+
+            </div>
+
+        </div>
+
+
+        <div class="dairy-information-list">
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">Dairy Name</span>
+
+                <strong>
+                    {{ user.dairy_name or 'Not available' }}
+                </strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">Dairy ID</span>
+
+                <strong>
+
+                    {% if user.dairy_id %}
+
+                        #{{ user.dairy_id }}
+
+                    {% else %}
+
+                        Not available
+
+                    {% endif %}
+
+                </strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">Dairy Code</span>
+
+                <strong>
+                    {{ user.dairy_code or 'Not available' }}
+                </strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">Association</span>
+
+                <strong>
+
+                    {% if role == 'Owner' %}
+
+                        Dairy Owner
+
+                    {% elif role == 'Staff' %}
+
+                        Dairy Staff
+
+                    {% else %}
+
+                        Dairy Vendor
+
+                    {% endif %}
+
+                </strong>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- =====================================================
+     ROLE SPECIFIC INFORMATION
+===================================================== -->
+
+<div class="dairy-information-panel user-role-details-panel">
+
+    <div class="dairy-information-header">
+
+        <div class="dairy-information-icon icon-purple">
+
+            <i class="bi bi-person-gear"></i>
+
+        </div>
+
+        <div>
+
+            <h3>Role-Specific Information</h3>
+
+            <p>Additional details based on user account type</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- OWNER DETAILS -->
+
+    {% if role == 'Owner' %}
+
+        <div class="role-information-content">
+
+            <div class="role-information-icon icon-purple">
+
+                <i class="bi bi-building"></i>
+
+            </div>
+
+            <div>
+
+                <h4>Dairy Owner Account</h4>
+
+                <p>
+                    This user is registered as a DairyMitr
+                    dairy owner and manages their dairy account.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="role-information-grid">
+
+            <div class="role-information-item">
+
+                <span>Owner Account ID</span>
+
+                <strong>#{{ user.id }}</strong>
+
+            </div>
+
+
+            <div class="role-information-item">
+
+                <span>Dairy Name</span>
+
+                <strong>
+                    {{ user.dairy_name or 'Not available' }}
+                </strong>
+
+            </div>
+
+
+            <div class="role-information-item">
+
+                <span>Dairy Code</span>
+
+                <strong>
+                    {{ user.dairy_code or 'Not available' }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+    <!-- STAFF DETAILS -->
+
+    {% elif role == 'Staff' %}
+
+        <div class="role-information-content">
+
+            <div class="role-information-icon icon-green">
+
+                <i class="bi bi-person-badge"></i>
+
+            </div>
+
+            <div>
+
+                <h4>Dairy Staff Account</h4>
+
+                <p>
+                    This user is registered as a staff member
+                    under a DairyMitr dairy account.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="role-information-grid">
+
+            <div class="role-information-item">
+
+                <span>Staff ID</span>
+
+                <strong>#{{ user.id }}</strong>
+
+            </div>
+
+
+            <div class="role-information-item">
+
+                <span>Staff Role</span>
+
+                <strong>
+                    {{ user.staff_role or 'Not available' }}
+                </strong>
+
+            </div>
+
+
+            <div class="role-information-item">
+
+                <span>Vehicle Number</span>
+
+                <strong>
+                    {{ user.vehicle_number or 'Not available' }}
+                </strong>
+
+            </div>
+
+
+            <div class="role-information-item">
+
+                <span>Staff Status</span>
+
+                {% if user.status in [1, true, '1', 'Active', 'active'] %}
+
+                    <span class="status-badge status-verified">
+                        Active
+                    </span>
+
+                {% else %}
+
+                    <span class="status-badge status-unverified">
+                        Inactive
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+    <!-- CUSTOMER / VENDOR DETAILS -->
+
+    {% elif role == 'Customer' %}
+
+        <div class="role-information-content">
+
+            <div class="role-information-icon icon-orange">
+
+                <i class="bi bi-person-heart"></i>
+
+            </div>
+
+            <div>
+
+                <h4>Customer / Vendor Account</h4>
+
+                <p>
+                    This user is registered as a milk vendor
+                    associated with a DairyMitr dairy.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="role-information-grid">
+
+            <div class="role-information-item">
+
+                <span>Vendor ID</span>
+
+                <strong>
+                    {{ user.vendor_id or 'Not available' }}
+                </strong>
+
+            </div>
+
+
+            <div class="role-information-item">
+
+                <span>Milk Type</span>
+
+                <strong>
+                    {{ user.milk_type or 'Not available' }}
+                </strong>
+
+            </div>
+
+
+            <div class="role-information-item">
+
+                <span>Address</span>
+
+                <strong>
+                    {{ user.address or 'Not available' }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+    {% endif %}
+
+</div>
+
+
+<!-- =====================================================
+     INFORMATION NOTICE
+===================================================== -->
+
+<div class="management-notice">
+
+    <div class="notice-icon">
+
+        <i class="bi bi-shield-lock"></i>
+
+    </div>
+
+    <div class="notice-content">
+
+        <strong>Read-Only User Profile</strong>
+
+        <p>
+            This page displays the available information
+            from the existing DairyMitr database.
+            Account credentials and sensitive authentication
+            information are not displayed.
+        </p>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

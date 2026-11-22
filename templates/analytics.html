@@ -1,0 +1,727 @@
+
+{% extends "base.html" %}
+
+{% block title %}Analytics{% endblock %}
+
+{% block breadcrumb %}Analytics{% endblock %}
+
+{% block content %}
+
+<!-- =====================================================
+     PAGE HEADER
+===================================================== -->
+
+<div class="page-header">
+
+    <div class="page-header-content">
+
+        <span class="page-eyebrow">PLATFORM INSIGHTS</span>
+
+        <h2>Analytics & Reports</h2>
+
+        <p>
+            Monitor DairyMitr platform performance and
+            understand overall business activity.
+        </p>
+
+    </div>
+
+    <div class="page-header-actions">
+
+        <span class="total-records-badge">
+
+            <i class="bi bi-bar-chart-line"></i>
+
+            Platform Analytics
+
+        </span>
+
+    </div>
+
+</div>
+
+<!-- =====================================================
+     ANALYTICS SUMMARY
+===================================================== -->
+
+<div class="management-stats-grid">
+
+    <!-- TOTAL DAIRIES -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-blue">
+
+            <i class="bi bi-building"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Total Dairies</span>
+
+            <h3>{{ analytics_stats.total_dairies | default(0) }}</h3>
+
+            <p>Registered dairy accounts</p>
+
+        </div>
+
+    </div>
+
+    <!-- TOTAL USERS -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-purple">
+
+            <i class="bi bi-people"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Total Users</span>
+
+            <h3>{{ analytics_stats.total_users | default(0) }}</h3>
+
+            <p>Owners, staff and vendors</p>
+
+        </div>
+
+    </div>
+
+    <!-- TOTAL VENDORS -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-green">
+
+            <i class="bi bi-person-heart"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Total Vendors</span>
+
+            <h3>{{ analytics_stats.total_vendors | default(0) }}</h3>
+
+            <p>Registered milk vendors</p>
+
+        </div>
+
+    </div>
+
+    <!-- TOTAL MILK -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-teal">
+
+            <i class="bi bi-droplet-half"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Total Milk Collection</span>
+
+            <h3>
+                {{ "%.2f"|format(analytics_stats.total_milk | default(0, true) | float) }}
+            </h3>
+
+            <p>Litres collected</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =====================================================
+     DAIRY AND USER GROWTH CHARTS
+===================================================== -->
+
+<div class="analytics-charts-grid">
+
+    <!-- DAIRY GROWTH -->
+
+    <div class="dashboard-panel analytics-chart-panel">
+
+        <div class="dashboard-panel-header">
+
+            <div class="panel-header-info">
+
+                <div class="panel-icon icon-blue">
+
+                    <i class="bi bi-building"></i>
+
+                </div>
+
+                <div>
+
+                    <h3>Dairy Growth</h3>
+
+                    <p>Registered dairy accounts over time</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="analytics-chart-container">
+
+            {% if dairy_growth %}
+
+                <canvas id="dairyGrowthChart"></canvas>
+
+            {% else %}
+
+                <div class="chart-empty-state">
+
+                    <i class="bi bi-bar-chart"></i>
+
+                    <strong>Growth Data Unavailable</strong>
+
+                    <span>
+                        Registration date information is not available.
+                    </span>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- USER GROWTH -->
+
+    <div class="dashboard-panel analytics-chart-panel">
+
+        <div class="dashboard-panel-header">
+
+            <div class="panel-header-info">
+
+                <div class="panel-icon icon-purple">
+
+                    <i class="bi bi-people"></i>
+
+                </div>
+
+                <div>
+
+                    <h3>User Overview</h3>
+
+                    <p>Distribution of registered users</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="analytics-chart-container">
+
+            <canvas id="userDistributionChart"></canvas>
+
+        </div>
+
+        <script type="application/json" id="userDistributionData">
+            {{ {
+                "owners": analytics_stats.total_dairies | default(0),
+                "staff": analytics_stats.total_staff | default(0),
+                "vendors": analytics_stats.total_vendors | default(0)
+            } | tojson }}
+        </script>
+
+    </div>
+
+</div>
+
+<!-- =====================================================
+     MILK COLLECTION ANALYTICS
+===================================================== -->
+
+<div class="dashboard-panel analytics-milk-panel">
+
+    <div class="dashboard-panel-header">
+
+        <div class="panel-header-info">
+
+            <div class="panel-icon icon-teal">
+
+                <i class="bi bi-droplet-half"></i>
+
+            </div>
+
+            <div>
+
+                <h3>Milk Collection Analytics</h3>
+
+                <p>Monthly milk collection across the platform</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="analytics-chart-container analytics-large-chart">
+
+        {% if monthly_milk %}
+
+            <canvas id="monthlyMilkChart"></canvas>
+
+        {% else %}
+
+            <div class="chart-empty-state">
+
+                <i class="bi bi-droplet"></i>
+
+                <strong>No Milk Collection Data</strong>
+
+                <span>
+                    Monthly collection statistics are not available.
+                </span>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<!-- =====================================================
+     DAIRY VERIFICATION ANALYTICS
+===================================================== -->
+
+<div class="dashboard-panel analytics-verification-panel">
+
+    <div class="dashboard-panel-header">
+
+        <div class="panel-header-info">
+
+            <div class="panel-icon icon-green">
+
+                <i class="bi bi-shield-check"></i>
+
+            </div>
+
+            <div>
+
+                <h3>Dairy Verification Overview</h3>
+
+                <p>Verified and unverified dairy accounts</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="analytics-verification-content">
+
+        <div class="verification-chart-container">
+
+            <canvas id="verificationAnalyticsChart"></canvas>
+
+        </div>
+
+        <div class="analytics-verification-stats">
+
+            <div class="analytics-verification-item">
+
+                <span class="legend-dot legend-verified"></span>
+
+                <div>
+
+                    <strong>Verified Dairies</strong>
+
+                    <h3>
+                        {{ analytics_stats.verified_dairies | default(0) }}
+                    </h3>
+
+                </div>
+
+            </div>
+
+            <div class="analytics-verification-item">
+
+                <span class="legend-dot legend-unverified"></span>
+
+                <div>
+
+                    <strong>Unverified Dairies</strong>
+
+                    <h3>
+                        {{ analytics_stats.unverified_dairies | default(0) }}
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =====================================================
+     ANALYTICS INFORMATION NOTICE
+===================================================== -->
+
+<div class="management-notice">
+
+    <div class="notice-icon">
+
+        <i class="bi bi-info-circle"></i>
+
+    </div>
+
+    <div class="notice-content">
+
+        <strong>Analytics Data Accuracy</strong>
+
+        <p>
+
+            Charts are generated from available database records.
+            Historical dairy growth cannot be calculated accurately
+            until registration timestamps are available.
+            Milk collection figures must also avoid double-counting
+            between legacy and FAT/SNF collection systems.
+
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+<!-- =====================================================
+     CHART.JS AND ANALYTICS DATA
+===================================================== -->
+
+{% block scripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    if (typeof Chart === "undefined") {
+        return;
+    }
+
+    // USER DISTRIBUTION
+
+    const userDataElement = document.getElementById(
+        "userDistributionData"
+    );
+
+    if (userDataElement) {
+
+        const userData = JSON.parse(userDataElement.textContent);
+
+        const userCanvas = document.getElementById(
+            "userDistributionChart"
+        );
+
+        if (userCanvas) {
+
+            new Chart(userCanvas, {
+
+                type: "doughnut",
+
+                data: {
+
+                    labels: [
+                        "Owners",
+                        "Staff",
+                        "Vendors"
+                    ],
+
+                    datasets: [{
+
+                        data: [
+                            userData.owners,
+                            userData.staff,
+                            userData.vendors
+                        ],
+
+                        backgroundColor: [
+                            "#4776E6",
+                            "#8E54E9",
+                            "#20B486"
+                        ],
+
+                        borderWidth: 0,
+
+                        hoverOffset: 8
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    cutout: "68%",
+
+                    plugins: {
+
+                        legend: {
+
+                            position: "bottom",
+
+                            labels: {
+
+                                usePointStyle: true,
+
+                                padding: 20
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+    }
+
+    // VERIFICATION ANALYTICS
+
+    const verificationCanvas = document.getElementById(
+        "verificationAnalyticsChart"
+    );
+
+    if (verificationCanvas) {
+
+        new Chart(verificationCanvas, {
+
+            type: "doughnut",
+
+            data: {
+
+                labels: [
+                    "Verified",
+                    "Unverified"
+                ],
+
+                datasets: [{
+
+                    data: [
+
+                        {{ analytics_stats.verified_dairies | default(0) | tojson }},
+
+                        {{ analytics_stats.unverified_dairies | default(0) | tojson }}
+
+                    ],
+
+                    backgroundColor: [
+                        "#20B486",
+                        "#F59E0B"
+                    ],
+
+                    borderWidth: 0,
+
+                    hoverOffset: 8
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                cutout: "72%",
+
+                plugins: {
+
+                    legend: {
+
+                        display: false
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+    // DAIRY GROWTH
+
+    const dairyGrowthCanvas = document.getElementById(
+        "dairyGrowthChart"
+    );
+
+    if (dairyGrowthCanvas) {
+
+        const growthData = {{ dairy_growth | default([]) | tojson }};
+
+        new Chart(dairyGrowthCanvas, {
+
+            type: "line",
+
+            data: {
+
+                labels: growthData.map(item => item.month),
+
+                datasets: [{
+
+                    label: "Registered Dairies",
+
+                    data: growthData.map(item => item.count),
+
+                    borderColor: "#4776E6",
+
+                    backgroundColor: "rgba(71, 118, 230, 0.12)",
+
+                    fill: true,
+
+                    tension: 0.4,
+
+                    pointRadius: 4,
+
+                    pointHoverRadius: 6
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+
+                        display: false
+
+                    }
+
+                },
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        ticks: {
+
+                            precision: 0
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+    // MONTHLY MILK COLLECTION
+
+    const milkCanvas = document.getElementById(
+        "monthlyMilkChart"
+    );
+
+    if (milkCanvas) {
+
+        const milkData = {{ monthly_milk | default([]) | tojson }};
+
+        new Chart(milkCanvas, {
+
+            type: "bar",
+
+            data: {
+
+                labels: milkData.map(item => item.month),
+
+                datasets: [{
+
+                    label: "Milk Collection (Litres)",
+
+                    data: milkData.map(item => item.total),
+
+                    backgroundColor: "#20B486",
+
+                    borderRadius: 6,
+
+                    maxBarThickness: 45
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+
+                        display: false
+
+                    }
+
+                },
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        title: {
+
+                            display: true,
+
+                            text: "Litres"
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

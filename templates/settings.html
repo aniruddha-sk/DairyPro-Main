@@ -1,0 +1,671 @@
+
+{% extends "base.html" %}
+
+{% block title %}Platform Settings{% endblock %}
+
+{% block breadcrumb %}Settings{% endblock %}
+
+{% block content %}
+
+<!-- =====================================================
+     PAGE HEADER
+===================================================== -->
+
+<div class="page-header">
+
+    <div class="page-header-content">
+
+        <span class="page-eyebrow">SYSTEM CONFIGURATION</span>
+
+        <h2>Platform Settings</h2>
+
+        <p>
+            View Super Admin profile, platform information
+            and system configuration.
+        </p>
+
+    </div>
+
+    <div class="page-header-actions">
+
+        <span class="total-records-badge">
+
+            <i class="bi bi-gear"></i>
+
+            System Settings
+
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SETTINGS OVERVIEW
+===================================================== -->
+
+<div class="management-stats-grid">
+
+
+    <!-- ADMIN ACCOUNT -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-blue">
+
+            <i class="bi bi-person-shield"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Admin Account</span>
+
+            <h3>Active</h3>
+
+            <p>Super Admin session</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- PLATFORM STATUS -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-green">
+
+            <i class="bi bi-check-circle"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Platform</span>
+
+            <h3>Running</h3>
+
+            <p>Super Admin application</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- DATABASE -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-purple">
+
+            <i class="bi bi-database"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Database</span>
+
+            <h3>Connected</h3>
+
+            <p>Production database configuration</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- SECURITY -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-orange">
+
+            <i class="bi bi-shield-lock"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Security</span>
+
+            <h3>Protected</h3>
+
+            <p>Authenticated admin access</p>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- =====================================================
+     SETTINGS GRID
+===================================================== -->
+
+<div class="settings-grid">
+
+
+    <!-- =================================================
+         SUPER ADMIN PROFILE
+    ================================================== -->
+
+    <div class="dairy-information-panel settings-panel">
+
+        <div class="dairy-information-header">
+
+            <div class="dairy-information-icon icon-blue">
+
+                <i class="bi bi-person-vcard"></i>
+
+            </div>
+
+            <div>
+
+                <h3>Super Admin Profile</h3>
+
+                <p>Current administrator information</p>
+
+            </div>
+
+        </div>
+
+
+        <div class="dairy-information-list">
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Account Role
+                </span>
+
+                <strong>Super Administrator</strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Admin Email
+                </span>
+
+                <strong class="information-value">
+
+                    <i class="bi bi-envelope"></i>
+
+                    {{ admin_email or 'Not available' }}
+
+                </strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Authentication
+                </span>
+
+                <strong>Environment-based credentials</strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Session Status
+                </span>
+
+                <span class="status-badge status-verified">
+
+                    <i class="bi bi-check-circle-fill"></i>
+
+                    Authenticated
+
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         PLATFORM INFORMATION
+    ================================================== -->
+
+    <div class="dairy-information-panel settings-panel">
+
+        <div class="dairy-information-header">
+
+            <div class="dairy-information-icon icon-green">
+
+                <i class="bi bi-globe"></i>
+
+            </div>
+
+            <div>
+
+                <h3>Platform Information</h3>
+
+                <p>Application details</p>
+
+            </div>
+
+        </div>
+
+
+        <div class="dairy-information-list">
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Application Name
+                </span>
+
+                <strong>DairyMitr Super Admin</strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Application Version
+                </span>
+
+                <strong>{{ app_version or 'Not specified' }}</strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Backend Framework
+                </span>
+
+                <strong>Python Flask</strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Database
+                </span>
+
+                <strong>MySQL</strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Database Name
+                </span>
+
+                <strong>{{ database_name or 'Not available' }}</strong>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         SECURITY CONFIGURATION
+    ================================================== -->
+
+    <div class="dairy-information-panel settings-panel">
+
+        <div class="dairy-information-header">
+
+            <div class="dairy-information-icon icon-purple">
+
+                <i class="bi bi-shield-lock"></i>
+
+            </div>
+
+            <div>
+
+                <h3>Security Configuration</h3>
+
+                <p>Application security overview</p>
+
+            </div>
+
+        </div>
+
+
+        <div class="settings-option-list">
+
+
+            <div class="settings-option-item">
+
+                <div class="settings-option-icon">
+
+                    <i class="bi bi-shield-check"></i>
+
+                </div>
+
+                <div class="settings-option-info">
+
+                    <strong>Authentication</strong>
+
+                    <span>Super Admin login protection</span>
+
+                </div>
+
+                <span class="status-badge status-verified">
+                    Enabled
+                </span>
+
+            </div>
+
+
+            <div class="settings-option-item">
+
+                <div class="settings-option-icon">
+
+                    <i class="bi bi-key"></i>
+
+                </div>
+
+                <div class="settings-option-info">
+
+                    <strong>Password Hashing</strong>
+
+                    <span>Hashed admin password verification</span>
+
+                </div>
+
+                <span class="status-badge status-verified">
+                    Enabled
+                </span>
+
+            </div>
+
+
+            <div class="settings-option-item">
+
+                <div class="settings-option-icon">
+
+                    <i class="bi bi-file-lock"></i>
+
+                </div>
+
+                <div class="settings-option-info">
+
+                    <strong>CSRF Protection</strong>
+
+                    <span>Form submission protection</span>
+
+                </div>
+
+                <span class="status-badge status-verified">
+                    Enabled
+                </span>
+
+            </div>
+
+
+            <div class="settings-option-item">
+
+                <div class="settings-option-icon">
+
+                    <i class="bi bi-speedometer2"></i>
+
+                </div>
+
+                <div class="settings-option-info">
+
+                    <strong>Login Rate Limiting</strong>
+
+                    <span>Protection against repeated attempts</span>
+
+                </div>
+
+                <span class="status-badge status-verified">
+                    Enabled
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         DATABASE CONFIGURATION
+    ================================================== -->
+
+    <div class="dairy-information-panel settings-panel">
+
+        <div class="dairy-information-header">
+
+            <div class="dairy-information-icon icon-teal">
+
+                <i class="bi bi-database-gear"></i>
+
+            </div>
+
+            <div>
+
+                <h3>Database Configuration</h3>
+
+                <p>Connected database information</p>
+
+            </div>
+
+        </div>
+
+
+        <div class="dairy-information-list">
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Database Engine
+                </span>
+
+                <strong>MySQL</strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Database Name
+                </span>
+
+                <strong>
+                    {{ database_name or 'Not available' }}
+                </strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Connection Status
+                </span>
+
+                {% if database_connected %}
+
+                    <span class="status-badge status-verified">
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                        Connected
+
+                    </span>
+
+                {% else %}
+
+                    <span class="status-badge status-unverified">
+
+                        <i class="bi bi-x-circle-fill"></i>
+
+                        Not Connected
+
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Database Access
+                </span>
+
+                <strong>Existing DairyMitr Database</strong>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         ENVIRONMENT INFORMATION
+    ================================================== -->
+
+    <div class="dairy-information-panel settings-panel">
+
+        <div class="dairy-information-header">
+
+            <div class="dairy-information-icon icon-orange">
+
+                <i class="bi bi-terminal"></i>
+
+            </div>
+
+            <div>
+
+                <h3>Environment Information</h3>
+
+                <p>Application runtime configuration</p>
+
+            </div>
+
+        </div>
+
+
+        <div class="dairy-information-list">
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Application Environment
+                </span>
+
+                <strong>
+                    {{ app_environment or 'Not specified' }}
+                </strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Debug Mode
+                </span>
+
+                <strong>
+                    {{ 'Enabled' if debug_mode else 'Disabled' }}
+                </strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Session Security
+                </span>
+
+                <strong>
+                    {{ 'Secure Cookie' if secure_cookie else 'Standard Cookie' }}
+                </strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Application Framework
+                </span>
+
+                <strong>Flask</strong>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- =====================================================
+     SETTINGS INFORMATION NOTICE
+===================================================== -->
+
+<div class="management-notice">
+
+    <div class="notice-icon">
+
+        <i class="bi bi-info-circle"></i>
+
+    </div>
+
+    <div class="notice-content">
+
+        <strong>Configuration Safety</strong>
+
+        <p>
+
+            This settings page provides a read-only overview
+            of the current application configuration.
+            Passwords, secret keys, database credentials
+            and other sensitive environment variables
+            are never displayed.
+
+        </p>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

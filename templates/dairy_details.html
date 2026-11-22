@@ -1,0 +1,706 @@
+
+{% extends "base.html" %}
+
+{% block title %}Dairy Details{% endblock %}
+
+{% block breadcrumb %}Dairy Details{% endblock %}
+
+{% block content %}
+
+<!-- =====================================================
+     PAGE HEADER
+===================================================== -->
+
+<div class="page-header dairy-details-header">
+
+    <div class="page-header-content">
+
+        <span class="page-eyebrow">DAIRY MANAGEMENT</span>
+
+        <h2>Dairy Details</h2>
+
+        <p>
+            Complete information and activity overview
+            of the selected dairy account.
+        </p>
+
+    </div>
+
+    <div class="page-header-actions">
+
+        <a href="{{ url_for('dairies') }}"
+           class="btn-outline-primary">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back to Dairies
+
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     DAIRY PROFILE
+===================================================== -->
+
+<div class="dairy-profile-panel">
+
+    <div class="dairy-profile-main">
+
+        <div class="dairy-profile-avatar">
+
+            <i class="bi bi-building"></i>
+
+        </div>
+
+        <div class="dairy-profile-info">
+
+            <span class="profile-label">DAIRY ACCOUNT</span>
+
+            <h3>
+                {{ dairy.dairy_name or 'Unnamed Dairy' }}
+            </h3>
+
+            <div class="dairy-profile-meta">
+
+                <span>
+                    <i class="bi bi-hash"></i>
+                    ID: {{ dairy.id }}
+                </span>
+
+                <span>
+                    <i class="bi bi-upc-scan"></i>
+                    Code: {{ dairy.dairy_code or 'N/A' }}
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="dairy-profile-status">
+
+        {% if dairy.is_verified %}
+
+            <span class="status-badge status-verified">
+
+                <i class="bi bi-check-circle-fill"></i>
+
+                Verified Account
+
+            </span>
+
+        {% else %}
+
+            <span class="status-badge status-unverified">
+
+                <i class="bi bi-clock-fill"></i>
+
+                Unverified Account
+
+            </span>
+
+        {% endif %}
+
+        <span class="profile-status-note">
+            Account verification status
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     DAIRY STATISTICS
+===================================================== -->
+
+<div class="dairy-details-stats-grid">
+
+
+    <!-- TOTAL VENDORS -->
+
+    <div class="dairy-detail-stat-card">
+
+        <div class="dairy-detail-stat-icon icon-blue">
+
+            <i class="bi bi-people"></i>
+
+        </div>
+
+        <div class="dairy-detail-stat-info">
+
+            <span>Total Vendors</span>
+
+            <h3>
+                {{ vendor_stats.total_vendors | default(0, true) }}
+            </h3>
+
+            <p>Registered customers</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- TOTAL STAFF -->
+
+    <div class="dairy-detail-stat-card">
+
+        <div class="dairy-detail-stat-icon icon-purple">
+
+            <i class="bi bi-person-badge"></i>
+
+        </div>
+
+        <div class="dairy-detail-stat-info">
+
+            <span>Total Staff</span>
+
+            <h3>
+                {{ staff_stats.total_staff | default(0, true) }}
+            </h3>
+
+            <p>Registered staff members</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACTIVE STAFF -->
+
+    <div class="dairy-detail-stat-card">
+
+        <div class="dairy-detail-stat-icon icon-green">
+
+            <i class="bi bi-person-check"></i>
+
+        </div>
+
+        <div class="dairy-detail-stat-info">
+
+            <span>Active Staff</span>
+
+            <h3>
+                {{ staff_stats.active_staff | default(0, true) }}
+            </h3>
+
+            <p>Currently active</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- TOTAL MILK -->
+
+    <div class="dairy-detail-stat-card">
+
+        <div class="dairy-detail-stat-icon icon-teal">
+
+            <i class="bi bi-droplet-half"></i>
+
+        </div>
+
+        <div class="dairy-detail-stat-info">
+
+            <span>Total Milk Collection</span>
+
+            <h3>
+                {{ "%.2f"|format(milk_stats.total_milk | default(0, true) | float) }}
+            </h3>
+
+            <p>Litres collected overall</p>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- =====================================================
+     DAIRY INFORMATION
+===================================================== -->
+
+<div class="dairy-details-grid">
+
+
+    <!-- OWNER / CONTACT INFORMATION -->
+
+    <div class="dairy-information-panel">
+
+        <div class="dairy-information-header">
+
+            <div class="dairy-information-icon icon-blue">
+
+                <i class="bi bi-person-vcard"></i>
+
+            </div>
+
+            <div>
+
+                <h3>Owner Information</h3>
+
+                <p>Registered dairy owner details</p>
+
+            </div>
+
+        </div>
+
+
+        <div class="dairy-information-list">
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Dairy Name
+                </span>
+
+                <strong>
+                    {{ dairy.dairy_name or 'Not available' }}
+                </strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Email Address
+                </span>
+
+                <strong class="information-value">
+
+                    <i class="bi bi-envelope"></i>
+
+                    {{ dairy.email }}
+
+                </strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Phone Number
+                </span>
+
+                <strong class="information-value">
+
+                    <i class="bi bi-telephone"></i>
+
+                    {{ dairy.phone or 'Not available' }}
+
+                </strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Dairy Code
+                </span>
+
+                <strong>
+                    {{ dairy.dairy_code or 'Not available' }}
+                </strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Account ID
+                </span>
+
+                <strong>
+                    #{{ dairy.id }}
+                </strong>
+
+            </div>
+
+
+            <div class="dairy-information-item">
+
+                <span class="information-label">
+                    Verification
+                </span>
+
+                {% if dairy.is_verified %}
+
+                    <span class="status-badge status-verified">
+                        Verified
+                    </span>
+
+                {% else %}
+
+                    <span class="status-badge status-unverified">
+                        Unverified
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ACCOUNT OVERVIEW -->
+
+    <div class="dairy-information-panel">
+
+        <div class="dairy-information-header">
+
+            <div class="dairy-information-icon icon-green">
+
+                <i class="bi bi-clipboard-data"></i>
+
+            </div>
+
+            <div>
+
+                <h3>Account Overview</h3>
+
+                <p>Current dairy account statistics</p>
+
+            </div>
+
+        </div>
+
+
+        <div class="dairy-overview-list">
+
+
+            <div class="dairy-overview-item">
+
+                <div class="overview-item-icon icon-blue">
+
+                    <i class="bi bi-people"></i>
+
+                </div>
+
+                <div class="overview-item-info">
+
+                    <strong>Total Vendors</strong>
+
+                    <span>Registered milk customers</span>
+
+                </div>
+
+                <strong class="overview-item-value">
+
+                    {{ vendor_stats.total_vendors | default(0, true) }}
+
+                </strong>
+
+            </div>
+
+
+            <div class="dairy-overview-item">
+
+                <div class="overview-item-icon icon-purple">
+
+                    <i class="bi bi-person-badge"></i>
+
+                </div>
+
+                <div class="overview-item-info">
+
+                    <strong>Total Staff</strong>
+
+                    <span>All staff members</span>
+
+                </div>
+
+                <strong class="overview-item-value">
+
+                    {{ staff_stats.total_staff | default(0, true) }}
+
+                </strong>
+
+            </div>
+
+
+            <div class="dairy-overview-item">
+
+                <div class="overview-item-icon icon-green">
+
+                    <i class="bi bi-person-check"></i>
+
+                </div>
+
+                <div class="overview-item-info">
+
+                    <strong>Active Staff</strong>
+
+                    <span>Currently active staff</span>
+
+                </div>
+
+                <strong class="overview-item-value">
+
+                    {{ staff_stats.active_staff | default(0, true) }}
+
+                </strong>
+
+            </div>
+
+
+            <div class="dairy-overview-item">
+
+                <div class="overview-item-icon icon-teal">
+
+                    <i class="bi bi-droplet-half"></i>
+
+                </div>
+
+                <div class="overview-item-info">
+
+                    <strong>Milk Collection</strong>
+
+                    <span>Total collected quantity</span>
+
+                </div>
+
+                <strong class="overview-item-value">
+
+                    {{ "%.2f"|format(milk_stats.total_milk | default(0, true) | float) }} L
+
+                </strong>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- =====================================================
+     RECENT VENDORS
+===================================================== -->
+
+<div class="management-panel dairy-vendors-panel">
+
+
+    <div class="management-panel-header">
+
+        <div>
+
+            <h3>Recent Registered Vendors</h3>
+
+            <p>
+                Latest vendors registered under this dairy.
+            </p>
+
+        </div>
+
+        <span class="records-count">
+
+            <i class="bi bi-people"></i>
+
+            {{ recent_vendors | length }} Recent Records
+
+        </span>
+
+    </div>
+
+
+    {% if recent_vendors %}
+
+
+    <div class="table-responsive">
+
+        <table class="table management-table" id="dairyVendorsTable">
+
+            <thead>
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Vendor Name</th>
+
+                    <th>Phone Number</th>
+
+                    <th>Milk Type</th>
+
+                    <th>Vendor ID</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for vendor in recent_vendors %}
+
+                <tr>
+
+                    <td>
+                        {{ loop.index }}
+                    </td>
+
+
+                    <td>
+
+                        <div class="dairy-table-info">
+
+                            <div class="dairy-table-avatar">
+
+                                <i class="bi bi-person"></i>
+
+                            </div>
+
+                            <div class="dairy-table-details">
+
+                                <strong>
+                                    {{ vendor.name_en or vendor.name }}
+                                </strong>
+
+                                <span>
+                                    {{ vendor.name }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="contact-info">
+
+                            <span>
+                                <i class="bi bi-telephone"></i>
+                                {{ vendor.phone or 'Not available' }}
+                            </span>
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="milk-type-badge">
+
+                            {% if vendor.milk_type == 'cow' %}
+
+                                <i class="bi bi-droplet"></i>
+                                Cow
+
+                            {% elif vendor.milk_type == 'buffalo' %}
+
+                                <i class="bi bi-droplet-half"></i>
+                                Buffalo
+
+                            {% else %}
+
+                                <i class="bi bi-droplets"></i>
+                                Both
+
+                            {% endif %}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="dairy-code">
+
+                            {{ vendor.vendor_id }}
+
+                        </span>
+
+                    </td>
+
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    {% else %}
+
+
+    <div class="empty-state">
+
+        <div class="empty-icon">
+
+            <i class="bi bi-people"></i>
+
+        </div>
+
+        <h4>No Vendors Found</h4>
+
+        <p>
+            No vendor records are available for this dairy.
+        </p>
+
+    </div>
+
+
+    {% endif %}
+
+
+</div>
+
+
+<!-- =====================================================
+     INFORMATION NOTICE
+===================================================== -->
+
+<div class="management-notice">
+
+    <div class="notice-icon">
+
+        <i class="bi bi-shield-check"></i>
+
+    </div>
+
+    <div class="notice-content">
+
+        <strong>Read-Only Dairy Information</strong>
+
+        <p>
+            This page displays existing dairy information
+            from the production database. No dairy records
+            are modified from this page.
+        </p>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

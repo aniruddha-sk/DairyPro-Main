@@ -1,0 +1,104 @@
+
+{% extends "base.html" %}
+
+{% block title %}Page Not Found{% endblock %}
+
+{% block content %}
+
+<div class="error-page">
+
+    <div class="error-illustration">
+
+        <div class="error-circle">
+
+            <i class="bi bi-search"></i>
+
+        </div>
+
+        <div class="error-number">
+
+            404
+
+        </div>
+
+    </div>
+
+
+    <div class="error-content">
+
+        <span class="page-eyebrow">
+            PAGE NOT FOUND
+        </span>
+
+        <h1>Oops! Page Not Found</h1>
+
+        <p>
+
+            The page you are looking for might have been
+            removed, had its name changed, or is temporarily
+            unavailable.
+
+        </p>
+
+
+        <div class="error-actions">
+
+            {% if session.get('super_admin_logged_in') %}
+
+                <a href="{{ url_for('dashboard') }}"
+                   class="btn-error-primary">
+
+                    <i class="bi bi-grid"></i>
+
+                    Back to Dashboard
+
+                </a>
+
+            {% else %}
+
+                <a href="{{ url_for('login') }}"
+                   class="btn-error-primary">
+
+                    <i class="bi bi-box-arrow-in-right"></i>
+
+                    Go to Login
+
+                </a>
+
+            {% endif %}
+
+
+            <button type="button"
+                    class="btn-error-secondary"
+                    onclick="window.history.back()">
+
+                <i class="bi bi-arrow-left"></i>
+
+                Go Back
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="error-footer">
+
+        <span>
+
+            <i class="bi bi-shield-check"></i>
+
+            DairyMitr Super Admin
+
+        </span>
+
+        <span>
+            Platform Management System
+        </span>
+
+    </div>
+
+</div>
+
+{% endblock %}

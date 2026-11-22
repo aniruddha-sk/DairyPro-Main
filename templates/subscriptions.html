@@ -1,0 +1,628 @@
+
+{% extends "base.html" %}
+
+{% block title %}Subscriptions{% endblock %}
+
+{% block breadcrumb %}Subscriptions{% endblock %}
+
+{% block content %}
+
+<!-- =====================================================
+     PAGE HEADER
+===================================================== -->
+
+<div class="page-header">
+
+    <div class="page-header-content">
+
+        <span class="page-eyebrow">SUBSCRIPTION MANAGEMENT</span>
+
+        <h2>Subscriptions</h2>
+
+        <p>
+            Monitor subscription plans and billing status
+            across DairyMitr.
+        </p>
+
+    </div>
+
+    <div class="page-header-actions">
+
+        <span class="total-records-badge">
+
+            <i class="bi bi-credit-card"></i>
+
+            Subscription Overview
+
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SUBSCRIPTION STATISTICS
+===================================================== -->
+
+<div class="management-stats-grid">
+
+
+    <!-- TOTAL SUBSCRIPTIONS -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-blue">
+
+            <i class="bi bi-collection"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Total Subscriptions</span>
+
+            <h3>{{ subscription_stats.total | default(0) }}</h3>
+
+            <p>All subscription records</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACTIVE SUBSCRIPTIONS -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-green">
+
+            <i class="bi bi-check-circle"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Active Subscriptions</span>
+
+            <h3>{{ subscription_stats.active | default(0) }}</h3>
+
+            <p>Currently active plans</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- EXPIRED SUBSCRIPTIONS -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-orange">
+
+            <i class="bi bi-calendar-x"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Expired Subscriptions</span>
+
+            <h3>{{ subscription_stats.expired | default(0) }}</h3>
+
+            <p>Expired plan records</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- PAID SUBSCRIPTIONS -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-purple">
+
+            <i class="bi bi-wallet2"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Paid Subscriptions</span>
+
+            <h3>{{ subscription_stats.paid | default(0) }}</h3>
+
+            <p>Paid plan records</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     PLAN OVERVIEW
+===================================================== -->
+
+<div class="subscription-plan-section">
+
+    <div class="section-heading">
+
+        <div>
+
+            <h3>Subscription Plan Overview</h3>
+
+            <p>
+                Distribution of dairy accounts by plan type.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="subscription-plan-grid">
+
+
+        <!-- FREE PLAN -->
+
+        <div class="subscription-plan-card">
+
+            <div class="subscription-plan-icon icon-blue">
+
+                <i class="bi bi-gift"></i>
+
+            </div>
+
+            <div class="subscription-plan-info">
+
+                <span>Free Plan</span>
+
+                <h3>{{ subscription_stats.free | default(0) }}</h3>
+
+                <p>Dairies using free plans</p>
+
+            </div>
+
+            <span class="plan-label free-plan-label">
+                FREE
+            </span>
+
+        </div>
+
+
+        <!-- PAID PLAN -->
+
+        <div class="subscription-plan-card">
+
+            <div class="subscription-plan-icon icon-purple">
+
+                <i class="bi bi-star"></i>
+
+            </div>
+
+            <div class="subscription-plan-info">
+
+                <span>Paid Plan</span>
+
+                <h3>{{ subscription_stats.paid | default(0) }}</h3>
+
+                <p>Dairies using paid plans</p>
+
+            </div>
+
+            <span class="plan-label paid-plan-label">
+                PAID
+            </span>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SUBSCRIPTION RECORDS
+===================================================== -->
+
+<div class="management-panel subscription-records-panel">
+
+
+    <div class="management-panel-header">
+
+        <div class="management-header-info">
+
+            <h3>All Subscription Records</h3>
+
+            <p>
+                Subscription information associated with dairy accounts.
+            </p>
+
+        </div>
+
+        <span class="records-count">
+
+            <i class="bi bi-list-ul"></i>
+
+            {{ subscriptions | length }} Records
+
+        </span>
+
+    </div>
+
+
+    <!-- SEARCH TOOLBAR -->
+
+    <div class="management-toolbar">
+
+        <form method="GET"
+              action="{{ url_for('subscriptions') }}"
+              class="search-form"
+              id="subscriptionSearchForm">
+
+            <div class="search-input-wrapper">
+
+                <i class="bi bi-search search-icon"></i>
+
+                <input
+                    type="text"
+                    name="search"
+                    id="subscriptionSearchInput"
+                    class="search-input"
+                    placeholder="Search dairy name or email..."
+                    value="{{ search or '' }}"
+                    autocomplete="off"
+                >
+
+                {% if search %}
+
+                    <a href="{{ url_for('subscriptions') }}"
+                       class="search-clear-btn"
+                       title="Clear search">
+
+                        <i class="bi bi-x-lg"></i>
+
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+
+            <button type="submit" class="btn-search">
+
+                <i class="bi bi-search"></i>
+
+                Search
+
+            </button>
+
+        </form>
+
+
+        <div class="toolbar-right">
+
+            <span class="table-info-text">
+
+                <i class="bi bi-shield-lock"></i>
+
+                Read-only records
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- TABLE -->
+
+    {% if subscriptions %}
+
+    <div class="table-responsive">
+
+        <table class="table management-table" id="subscriptionsTable">
+
+            <thead>
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Dairy Information</th>
+
+                    <th>Plan</th>
+
+                    <th>Billing Amount</th>
+
+                    <th>Start Date</th>
+
+                    <th>Expiry Date</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for subscription in subscriptions %}
+
+                <tr>
+
+                    <td>
+
+                        <span class="table-serial">
+                            {{ loop.index }}
+                        </span>
+
+                    </td>
+
+
+                    <!-- DAIRY -->
+
+                    <td>
+
+                        <div class="dairy-table-info">
+
+                            <div class="dairy-table-avatar">
+
+                                <i class="bi bi-building"></i>
+
+                            </div>
+
+                            <div class="dairy-table-details">
+
+                                <strong>
+
+                                    {{ subscription.dairy_name or 'Unknown Dairy' }}
+
+                                </strong>
+
+                                <span>
+
+                                    {{ subscription.email or 'No email available' }}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- PLAN -->
+
+                    <td>
+
+                        {% if subscription.plan_name %}
+
+                            <span class="subscription-plan-name">
+
+                                <i class="bi bi-award"></i>
+
+                                {{ subscription.plan_name }}
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="text-muted">
+                                Not available
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- AMOUNT -->
+
+                    <td>
+
+                        <strong class="subscription-amount">
+
+                            {% if subscription.amount is not none %}
+
+                                ₹{{ "%.2f"|format(subscription.amount | float) }}
+
+                            {% else %}
+
+                                Not available
+
+                            {% endif %}
+
+                        </strong>
+
+                    </td>
+
+
+                    <!-- START DATE -->
+
+                    <td>
+
+                        <span class="subscription-date">
+
+                            {% if subscription.start_date %}
+
+                                {{ subscription.start_date }}
+
+                            {% else %}
+
+                                Not available
+
+                            {% endif %}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- EXPIRY DATE -->
+
+                    <td>
+
+                        <span class="subscription-date">
+
+                            {% if subscription.expiry_date %}
+
+                                {{ subscription.expiry_date }}
+
+                            {% else %}
+
+                                Not available
+
+                            {% endif %}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- STATUS -->
+
+                    <td>
+
+                        {% if subscription.status == 'active' %}
+
+                            <span class="status-badge status-verified">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Active
+
+                            </span>
+
+                        {% elif subscription.status == 'expired' %}
+
+                            <span class="status-badge status-unverified">
+
+                                <i class="bi bi-calendar-x-fill"></i>
+
+                                Expired
+
+                            </span>
+
+                        {% elif subscription.status == 'pending' %}
+
+                            <span class="status-badge status-pending">
+
+                                <i class="bi bi-clock-fill"></i>
+
+                                Pending
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="status-badge status-unverified">
+
+                                {{ subscription.status or 'Unknown' }}
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    {% else %}
+
+
+    <!-- EMPTY STATE -->
+
+    <div class="empty-state">
+
+        <div class="empty-icon">
+
+            <i class="bi bi-credit-card"></i>
+
+        </div>
+
+        <h4>No Subscription Records</h4>
+
+        <p>
+
+            {% if search %}
+
+                No subscription records match your search.
+
+            {% else %}
+
+                Subscription records are not available yet.
+
+            {% endif %}
+
+        </p>
+
+
+        {% if search %}
+
+            <a href="{{ url_for('subscriptions') }}"
+               class="btn-outline-primary">
+
+                <i class="bi bi-arrow-counterclockwise"></i>
+
+                Clear Search
+
+            </a>
+
+        {% endif %}
+
+    </div>
+
+
+    {% endif %}
+
+
+</div>
+
+
+<!-- =====================================================
+     DATABASE NOTICE
+===================================================== -->
+
+<div class="management-notice">
+
+    <div class="notice-icon">
+
+        <i class="bi bi-info-circle"></i>
+
+    </div>
+
+    <div class="notice-content">
+
+        <strong>Subscription Data Integration</strong>
+
+        <p>
+
+            Subscription information requires a dedicated
+            subscription database structure. Until that
+            integration is implemented, subscription statistics
+            and records may remain empty.
+
+        </p>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

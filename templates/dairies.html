@@ -1,0 +1,616 @@
+
+{% extends "base.html" %}
+
+{% block title %}Dairy Management{% endblock %}
+
+{% block breadcrumb %}Dairy Management{% endblock %}
+
+{% block content %}
+
+<!-- =====================================================
+     PAGE HEADER
+===================================================== -->
+
+<div class="page-header">
+
+    <div class="page-header-content">
+
+        <span class="page-eyebrow">PLATFORM MANAGEMENT</span>
+
+        <h2>Dairy Management</h2>
+
+        <p>
+            View and manage all dairy accounts registered
+            on the DairyMitr platform.
+        </p>
+
+    </div>
+
+    <div class="page-header-actions">
+
+        <div class="total-records-badge">
+
+            <i class="bi bi-building"></i>
+
+            <span>
+                {{ total }} Total Dairies
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SUMMARY CARDS
+===================================================== -->
+
+<div class="management-stats-grid">
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-blue">
+            <i class="bi bi-building"></i>
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Total Dairies</span>
+
+            <h3>{{ total }}</h3>
+
+        </div>
+
+    </div>
+
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-green">
+            <i class="bi bi-patch-check"></i>
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Verified Accounts</span>
+
+            <h3>
+                {{ dairies | selectattr('is_verified') | list | length }}
+            </h3>
+
+        </div>
+
+    </div>
+
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-orange">
+            <i class="bi bi-exclamation-circle"></i>
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Unverified Accounts</span>
+
+            <h3>
+                {{ dairies | rejectattr('is_verified') | list | length }}
+            </h3>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     DAIRY LIST PANEL
+===================================================== -->
+
+<div class="management-panel">
+
+
+    <!-- PANEL HEADER -->
+
+    <div class="management-panel-header">
+
+        <div>
+
+            <h3>All Registered Dairies</h3>
+
+            <p>
+                Manage and view dairy account information.
+            </p>
+
+        </div>
+
+        <div class="management-header-info">
+
+            <span class="records-count">
+                <i class="bi bi-list-ul"></i>
+                {{ total }} Records
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         SEARCH SECTION
+    ================================================== -->
+
+    <div class="management-toolbar">
+
+        <form action="{{ url_for('dairies') }}"
+              method="GET"
+              class="search-form"
+              id="dairySearchForm">
+
+            <div class="search-input-wrapper">
+
+                <i class="bi bi-search"></i>
+
+                <input
+                    type="search"
+                    name="q"
+                    id="dairySearchInput"
+                    value="{{ search }}"
+                    placeholder="Search dairy name, email, phone or code..."
+                    class="search-input"
+                    maxlength="255"
+                    autocomplete="off"
+                >
+
+                {% if search %}
+
+                <a href="{{ url_for('dairies') }}"
+                   class="search-clear-btn"
+                   title="Clear search">
+
+                    <i class="bi bi-x-circle"></i>
+
+                </a>
+
+                {% endif %}
+
+            </div>
+
+            <button type="submit"
+                    class="btn-search"
+                    id="dairySearchBtn">
+
+                <i class="bi bi-search"></i>
+
+                Search
+
+            </button>
+
+        </form>
+
+
+        <div class="toolbar-right">
+
+            <span class="table-info-text">
+
+                Page {{ page }} of {{ total_pages if total_pages > 0 else 1 }}
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         DAIRY TABLE
+    ================================================== -->
+
+    {% if dairies %}
+
+    <div class="table-responsive">
+
+        <table class="table management-table" id="dairyTable">
+
+            <thead>
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Dairy Information</th>
+
+                    <th>Contact Details</th>
+
+                    <th>Dairy Code</th>
+
+                    <th>Vendors</th>
+
+                    <th>Staff</th>
+
+                    <th>Status</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for dairy in dairies %}
+
+                <tr>
+
+                    <!-- SERIAL NUMBER -->
+
+                    <td>
+
+                        <span class="table-serial">
+
+                            {{ (page - 1) * 20 + loop.index }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- DAIRY INFORMATION -->
+
+                    <td>
+
+                        <div class="dairy-table-info">
+
+                            <div class="dairy-table-avatar">
+
+                                <i class="bi bi-building"></i>
+
+                            </div>
+
+                            <div class="dairy-table-details">
+
+                                <strong>
+
+                                    {{ dairy.dairy_name or 'Unnamed Dairy' }}
+
+                                </strong>
+
+                                <span>
+
+                                    ID: {{ dairy.id }}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- CONTACT DETAILS -->
+
+                    <td>
+
+                        <div class="contact-info">
+
+                            <span>
+
+                                <i class="bi bi-envelope"></i>
+
+                                {{ dairy.email }}
+
+                            </span>
+
+                            <span>
+
+                                <i class="bi bi-telephone"></i>
+
+                                {{ dairy.phone or 'Not available' }}
+
+                            </span>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- DAIRY CODE -->
+
+                    <td>
+
+                        <span class="dairy-code">
+
+                            {{ dairy.dairy_code or 'N/A' }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- VENDORS -->
+
+                    <td>
+
+                        <span class="table-count-badge">
+
+                            <i class="bi bi-people"></i>
+
+                            {{ dairy.total_vendors }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- STAFF -->
+
+                    <td>
+
+                        <span class="table-count-badge">
+
+                            <i class="bi bi-person-badge"></i>
+
+                            {{ dairy.total_staff }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- VERIFICATION STATUS -->
+
+                    <td>
+
+                        {% if dairy.is_verified %}
+
+                            <span class="status-badge status-verified">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Verified
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="status-badge status-unverified">
+
+                                <i class="bi bi-clock-fill"></i>
+
+                                Unverified
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- ACTION -->
+
+                    <td>
+
+                        <a
+                            href="{{ url_for('dairy_details', dairy_id=dairy.id) }}"
+                            class="table-action-btn"
+                            title="View Dairy Details"
+                            aria-label="View dairy details"
+                        >
+
+                            <i class="bi bi-eye"></i>
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    {% else %}
+
+
+    <!-- =================================================
+         EMPTY STATE
+    ================================================== -->
+
+    <div class="empty-state">
+
+        <div class="empty-icon">
+
+            <i class="bi bi-building"></i>
+
+        </div>
+
+        {% if search %}
+
+            <h4>No Matching Dairies Found</h4>
+
+            <p>
+                No dairy accounts match your search.
+                Try another name, email, phone or dairy code.
+            </p>
+
+            <a href="{{ url_for('dairies') }}"
+               class="btn-outline-primary">
+
+                <i class="bi bi-arrow-counterclockwise"></i>
+
+                Clear Search
+
+            </a>
+
+        {% else %}
+
+            <h4>No Dairy Registrations Yet</h4>
+
+            <p>
+                Registered dairy accounts will appear here.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- =================================================
+         PAGINATION
+    ================================================== -->
+
+    {% if total_pages > 1 %}
+
+    <div class="management-pagination">
+
+        <div class="pagination-info">
+
+            Showing
+
+            {{ (page - 1) * 20 + 1 }}
+
+            to
+
+            {{ [(page * 20), total] | min }}
+
+            of
+
+            {{ total }} dairies
+
+        </div>
+
+
+        <nav aria-label="Dairy pagination">
+
+            <ul class="pagination">
+
+
+                <!-- PREVIOUS -->
+
+                <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+
+                    {% if page > 1 %}
+
+                    <a class="page-link"
+                       href="{{ url_for('dairies', page=page-1, q=search) }}"
+                       aria-label="Previous page">
+
+                        <i class="bi bi-chevron-left"></i>
+
+                    </a>
+
+                    {% else %}
+
+                    <span class="page-link">
+
+                        <i class="bi bi-chevron-left"></i>
+
+                    </span>
+
+                    {% endif %}
+
+                </li>
+
+
+                <!-- PAGE NUMBERS -->
+
+                {% set start_page = [1, page - 2] | max %}
+
+                {% set end_page = [total_pages, page + 2] | min %}
+
+
+                {% for page_number in range(start_page, end_page + 1) %}
+
+                <li class="page-item {% if page_number == page %}active{% endif %}">
+
+                    <a class="page-link"
+                       href="{{ url_for('dairies', page=page_number, q=search) }}">
+
+                        {{ page_number }}
+
+                    </a>
+
+                </li>
+
+                {% endfor %}
+
+
+                <!-- NEXT -->
+
+                <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+
+                    {% if page < total_pages %}
+
+                    <a class="page-link"
+                       href="{{ url_for('dairies', page=page+1, q=search) }}"
+                       aria-label="Next page">
+
+                        <i class="bi bi-chevron-right"></i>
+
+                    </a>
+
+                    {% else %}
+
+                    <span class="page-link">
+
+                        <i class="bi bi-chevron-right"></i>
+
+                    </span>
+
+                    {% endif %}
+
+                </li>
+
+
+            </ul>
+
+        </nav>
+
+    </div>
+
+    {% endif %}
+
+
+</div>
+
+
+<!-- =====================================================
+     INFORMATION NOTICE
+===================================================== -->
+
+<div class="management-notice">
+
+    <div class="notice-icon">
+
+        <i class="bi bi-info-circle"></i>
+
+    </div>
+
+    <div class="notice-content">
+
+        <strong>Account Management</strong>
+
+        <p>
+            This page currently provides read-only access
+            to dairy account information. No changes are
+            made to existing dairy accounts.
+        </p>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

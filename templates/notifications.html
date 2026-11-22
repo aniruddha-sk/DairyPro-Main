@@ -1,0 +1,565 @@
+
+{% extends "base.html" %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block breadcrumb %}Notifications{% endblock %}
+
+{% block content %}
+
+<!-- =====================================================
+     PAGE HEADER
+===================================================== -->
+
+<div class="page-header">
+
+    <div class="page-header-content">
+
+        <span class="page-eyebrow">COMMUNICATION MANAGEMENT</span>
+
+        <h2>Notifications</h2>
+
+        <p>
+            Monitor notification activity and delivery records
+            across DairyMitr.
+        </p>
+
+    </div>
+
+    <div class="page-header-actions">
+
+        <span class="total-records-badge">
+
+            <i class="bi bi-bell"></i>
+
+            Notification Center
+
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     NOTIFICATION STATISTICS
+===================================================== -->
+
+<div class="management-stats-grid">
+
+
+    <!-- TOTAL NOTIFICATIONS -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-blue">
+
+            <i class="bi bi-bell"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Total Notifications</span>
+
+            <h3>{{ notification_stats.total | default(0) }}</h3>
+
+            <p>All notification records</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- SENT -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-green">
+
+            <i class="bi bi-send-check"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Sent Notifications</span>
+
+            <h3>{{ notification_stats.sent | default(0) }}</h3>
+
+            <p>Successfully sent records</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- PENDING -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-orange">
+
+            <i class="bi bi-clock-history"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Pending Notifications</span>
+
+            <h3>{{ notification_stats.pending | default(0) }}</h3>
+
+            <p>Awaiting processing</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- FAILED -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-purple">
+
+            <i class="bi bi-exclamation-circle"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Failed Notifications</span>
+
+            <h3>{{ notification_stats.failed | default(0) }}</h3>
+
+            <p>Unsuccessful delivery attempts</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     NOTIFICATION HISTORY
+===================================================== -->
+
+<div class="management-panel notification-records-panel">
+
+
+    <!-- PANEL HEADER -->
+
+    <div class="management-panel-header">
+
+        <div class="management-header-info">
+
+            <h3>Notification History</h3>
+
+            <p>
+                View notification records and delivery information.
+            </p>
+
+        </div>
+
+        <span class="records-count">
+
+            <i class="bi bi-list-ul"></i>
+
+            {{ notifications | length }} Records
+
+        </span>
+
+    </div>
+
+
+    <!-- SEARCH TOOLBAR -->
+
+    <div class="management-toolbar">
+
+        <form method="GET"
+              action="{{ url_for('notifications') }}"
+              class="search-form"
+              id="notificationSearchForm">
+
+            <div class="search-input-wrapper">
+
+                <i class="bi bi-search search-icon"></i>
+
+                <input
+                    type="text"
+                    name="search"
+                    id="notificationSearchInput"
+                    class="search-input"
+                    placeholder="Search recipient or message..."
+                    value="{{ search or '' }}"
+                    autocomplete="off"
+                >
+
+                {% if search %}
+
+                    <a href="{{ url_for('notifications') }}"
+                       class="search-clear-btn"
+                       title="Clear search">
+
+                        <i class="bi bi-x-lg"></i>
+
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+
+            <button type="submit" class="btn-search">
+
+                <i class="bi bi-search"></i>
+
+                Search
+
+            </button>
+
+        </form>
+
+
+        <div class="toolbar-right">
+
+            <span class="table-info-text">
+
+                <i class="bi bi-shield-lock"></i>
+
+                Read-only notification history
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- NOTIFICATION TABLE -->
+
+    {% if notifications %}
+
+    <div class="table-responsive">
+
+        <table class="table management-table"
+               id="notificationsTable">
+
+            <thead>
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Recipient</th>
+
+                    <th>Notification</th>
+
+                    <th>Type</th>
+
+                    <th>Date</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for notification in notifications %}
+
+                <tr>
+
+
+                    <!-- SERIAL NUMBER -->
+
+                    <td>
+
+                        <span class="table-serial">
+
+                            {{ loop.index }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- RECIPIENT -->
+
+                    <td>
+
+                        <div class="dairy-table-info">
+
+                            <div class="dairy-table-avatar">
+
+                                <i class="bi bi-person"></i>
+
+                            </div>
+
+                            <div class="dairy-table-details">
+
+                                <strong>
+
+                                    {{ notification.recipient_name or 'Unknown Recipient' }}
+
+                                </strong>
+
+                                <span>
+
+                                    {{ notification.recipient or 'Not available' }}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- MESSAGE -->
+
+                    <td>
+
+                        <div class="notification-message">
+
+                            <strong>
+
+                                {{ notification.title or 'Notification' }}
+
+                            </strong>
+
+                            <span>
+
+                                {{ notification.message or 'No message available' }}
+
+                            </span>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- TYPE -->
+
+                    <td>
+
+                        {% if notification.type == 'email' %}
+
+                            <span class="notification-type-badge type-email">
+
+                                <i class="bi bi-envelope"></i>
+
+                                Email
+
+                            </span>
+
+                        {% elif notification.type == 'sms' %}
+
+                            <span class="notification-type-badge type-sms">
+
+                                <i class="bi bi-chat-dots"></i>
+
+                                SMS
+
+                            </span>
+
+                        {% elif notification.type == 'push' %}
+
+                            <span class="notification-type-badge type-push">
+
+                                <i class="bi bi-phone"></i>
+
+                                Push
+
+                            </span>
+
+                        {% elif notification.type == 'in_app' %}
+
+                            <span class="notification-type-badge type-inapp">
+
+                                <i class="bi bi-app-indicator"></i>
+
+                                In-App
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="notification-type-badge">
+
+                                {{ notification.type or 'Unknown' }}
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- DATE -->
+
+                    <td>
+
+                        <span class="subscription-date">
+
+                            {% if notification.created_at %}
+
+                                {{ notification.created_at }}
+
+                            {% else %}
+
+                                Not available
+
+                            {% endif %}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- STATUS -->
+
+                    <td>
+
+                        {% if notification.status == 'sent' %}
+
+                            <span class="status-badge status-verified">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Sent
+
+                            </span>
+
+                        {% elif notification.status == 'pending' %}
+
+                            <span class="status-badge status-pending">
+
+                                <i class="bi bi-clock-fill"></i>
+
+                                Pending
+
+                            </span>
+
+                        {% elif notification.status == 'failed' %}
+
+                            <span class="status-badge status-unverified">
+
+                                <i class="bi bi-x-circle-fill"></i>
+
+                                Failed
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="status-badge status-unverified">
+
+                                {{ notification.status or 'Unknown' }}
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    {% else %}
+
+
+    <!-- EMPTY STATE -->
+
+    <div class="empty-state">
+
+        <div class="empty-icon">
+
+            <i class="bi bi-bell-slash"></i>
+
+        </div>
+
+        <h4>No Notifications Found</h4>
+
+        <p>
+
+            {% if search %}
+
+                No notification records match your search.
+
+            {% else %}
+
+                Notification history is not available yet.
+
+            {% endif %}
+
+        </p>
+
+
+        {% if search %}
+
+            <a href="{{ url_for('notifications') }}"
+               class="btn-outline-primary">
+
+                <i class="bi bi-arrow-counterclockwise"></i>
+
+                Clear Search
+
+            </a>
+
+        {% endif %}
+
+    </div>
+
+
+    {% endif %}
+
+
+</div>
+
+
+<!-- =====================================================
+     INFORMATION NOTICE
+===================================================== -->
+
+<div class="management-notice">
+
+    <div class="notice-icon">
+
+        <i class="bi bi-info-circle"></i>
+
+    </div>
+
+    <div class="notice-content">
+
+        <strong>Notification History</strong>
+
+        <p>
+
+            This page displays notification records available
+            in the connected database. Delivery status should
+            reflect actual provider responses or application
+            delivery records, not merely an attempted send.
+
+        </p>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

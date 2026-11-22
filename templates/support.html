@@ -1,0 +1,583 @@
+
+{% extends "base.html" %}
+
+{% block title %}Support Management{% endblock %}
+
+{% block breadcrumb %}Support{% endblock %}
+
+{% block content %}
+
+<!-- =====================================================
+     PAGE HEADER
+===================================================== -->
+
+<div class="page-header">
+
+    <div class="page-header-content">
+
+        <span class="page-eyebrow">CUSTOMER SUPPORT</span>
+
+        <h2>Support Management</h2>
+
+        <p>
+            Monitor support requests and assistance requirements
+            from DairyMitr users.
+        </p>
+
+    </div>
+
+    <div class="page-header-actions">
+
+        <span class="total-records-badge">
+
+            <i class="bi bi-headset"></i>
+
+            Support Center
+
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SUPPORT STATISTICS
+===================================================== -->
+
+<div class="management-stats-grid">
+
+
+    <!-- TOTAL REQUESTS -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-blue">
+
+            <i class="bi bi-ticket-perforated"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Total Requests</span>
+
+            <h3>{{ support_stats.total | default(0) }}</h3>
+
+            <p>All support tickets</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- OPEN REQUESTS -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-orange">
+
+            <i class="bi bi-inbox"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Open Tickets</span>
+
+            <h3>{{ support_stats.open | default(0) }}</h3>
+
+            <p>Awaiting assistance</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- IN PROGRESS -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-purple">
+
+            <i class="bi bi-arrow-repeat"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>In Progress</span>
+
+            <h3>{{ support_stats.in_progress | default(0) }}</h3>
+
+            <p>Currently being handled</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- RESOLVED -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-green">
+
+            <i class="bi bi-check-circle"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Resolved</span>
+
+            <h3>{{ support_stats.resolved | default(0) }}</h3>
+
+            <p>Successfully resolved</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SUPPORT REQUESTS
+===================================================== -->
+
+<div class="management-panel support-records-panel">
+
+
+    <!-- PANEL HEADER -->
+
+    <div class="management-panel-header">
+
+        <div class="management-header-info">
+
+            <h3>Support Requests</h3>
+
+            <p>
+                View support tickets submitted by DairyMitr users.
+            </p>
+
+        </div>
+
+        <span class="records-count">
+
+            <i class="bi bi-ticket-detailed"></i>
+
+            {{ tickets | length }} Records
+
+        </span>
+
+    </div>
+
+
+    <!-- SEARCH TOOLBAR -->
+
+    <div class="management-toolbar">
+
+        <form method="GET"
+              action="{{ url_for('support') }}"
+              class="search-form"
+              id="supportSearchForm">
+
+            <div class="search-input-wrapper">
+
+                <i class="bi bi-search search-icon"></i>
+
+                <input
+                    type="text"
+                    name="search"
+                    id="supportSearchInput"
+                    class="search-input"
+                    placeholder="Search ticket, user or subject..."
+                    value="{{ search or '' }}"
+                    autocomplete="off"
+                >
+
+                {% if search %}
+
+                    <a href="{{ url_for('support') }}"
+                       class="search-clear-btn"
+                       title="Clear search">
+
+                        <i class="bi bi-x-lg"></i>
+
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+
+            <button type="submit" class="btn-search">
+
+                <i class="bi bi-search"></i>
+
+                Search
+
+            </button>
+
+        </form>
+
+
+        <div class="toolbar-right">
+
+            <span class="table-info-text">
+
+                <i class="bi bi-shield-lock"></i>
+
+                Read-only support records
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUPPORT TABLE -->
+
+    {% if tickets %}
+
+    <div class="table-responsive">
+
+        <table class="table management-table" id="supportTable">
+
+            <thead>
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Ticket ID</th>
+
+                    <th>User Information</th>
+
+                    <th>Subject</th>
+
+                    <th>Priority</th>
+
+                    <th>Created Date</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for ticket in tickets %}
+
+                <tr>
+
+
+                    <!-- SERIAL NUMBER -->
+
+                    <td>
+
+                        <span class="table-serial">
+
+                            {{ loop.index }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- TICKET ID -->
+
+                    <td>
+
+                        <span class="support-ticket-id">
+
+                            {{ ticket.ticket_id or ('#' ~ ticket.id) }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- USER INFORMATION -->
+
+                    <td>
+
+                        <div class="dairy-table-info">
+
+                            <div class="dairy-table-avatar">
+
+                                <i class="bi bi-person"></i>
+
+                            </div>
+
+                            <div class="dairy-table-details">
+
+                                <strong>
+
+                                    {{ ticket.user_name or 'Unknown User' }}
+
+                                </strong>
+
+                                <span>
+
+                                    {{ ticket.email or 'Not available' }}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- SUBJECT -->
+
+                    <td>
+
+                        <div class="support-subject">
+
+                            <strong>
+
+                                {{ ticket.subject or 'No subject' }}
+
+                            </strong>
+
+                            {% if ticket.message %}
+
+                                <span>
+
+                                    {{ ticket.message | truncate(65, true, '...') }}
+
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- PRIORITY -->
+
+                    <td>
+
+                        {% if ticket.priority == 'high' %}
+
+                            <span class="priority-badge priority-high">
+
+                                <i class="bi bi-arrow-up-circle"></i>
+
+                                High
+
+                            </span>
+
+                        {% elif ticket.priority == 'medium' %}
+
+                            <span class="priority-badge priority-medium">
+
+                                <i class="bi bi-dash-circle"></i>
+
+                                Medium
+
+                            </span>
+
+                        {% elif ticket.priority == 'low' %}
+
+                            <span class="priority-badge priority-low">
+
+                                <i class="bi bi-arrow-down-circle"></i>
+
+                                Low
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="priority-badge">
+
+                                {{ ticket.priority or 'Not set' }}
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- CREATED DATE -->
+
+                    <td>
+
+                        <span class="subscription-date">
+
+                            {% if ticket.created_at %}
+
+                                {{ ticket.created_at }}
+
+                            {% else %}
+
+                                Not available
+
+                            {% endif %}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- STATUS -->
+
+                    <td>
+
+                        {% if ticket.status == 'open' %}
+
+                            <span class="status-badge status-pending">
+
+                                <i class="bi bi-inbox-fill"></i>
+
+                                Open
+
+                            </span>
+
+                        {% elif ticket.status == 'in_progress' %}
+
+                            <span class="status-badge status-progress">
+
+                                <i class="bi bi-arrow-repeat"></i>
+
+                                In Progress
+
+                            </span>
+
+                        {% elif ticket.status == 'resolved' %}
+
+                            <span class="status-badge status-verified">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Resolved
+
+                            </span>
+
+                        {% elif ticket.status == 'closed' %}
+
+                            <span class="status-badge status-closed">
+
+                                <i class="bi bi-lock-fill"></i>
+
+                                Closed
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="status-badge status-unverified">
+
+                                {{ ticket.status or 'Unknown' }}
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    {% else %}
+
+
+    <!-- EMPTY STATE -->
+
+    <div class="empty-state">
+
+        <div class="empty-icon">
+
+            <i class="bi bi-headset"></i>
+
+        </div>
+
+        <h4>No Support Requests Found</h4>
+
+        <p>
+
+            {% if search %}
+
+                No support tickets match your search.
+
+            {% else %}
+
+                Support request records are not available yet.
+
+            {% endif %}
+
+        </p>
+
+
+        {% if search %}
+
+            <a href="{{ url_for('support') }}"
+               class="btn-outline-primary">
+
+                <i class="bi bi-arrow-counterclockwise"></i>
+
+                Clear Search
+
+            </a>
+
+        {% endif %}
+
+    </div>
+
+
+    {% endif %}
+
+
+</div>
+
+
+<!-- =====================================================
+     SUPPORT INFORMATION NOTICE
+===================================================== -->
+
+<div class="management-notice">
+
+    <div class="notice-icon">
+
+        <i class="bi bi-info-circle"></i>
+
+    </div>
+
+    <div class="notice-content">
+
+        <strong>Support System Integration</strong>
+
+        <p>
+
+            This page is designed to display support requests
+            and their actual status. Ticket management,
+            replies and status updates can be added after
+            a dedicated support ticket database is integrated.
+
+        </p>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

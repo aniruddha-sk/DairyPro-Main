@@ -1,0 +1,572 @@
+
+{% extends "base.html" %}
+
+{% block title %}Payments{% endblock %}
+
+{% block breadcrumb %}Payments{% endblock %}
+
+{% block content %}
+
+<!-- =====================================================
+     PAGE HEADER
+===================================================== -->
+
+<div class="page-header">
+
+    <div class="page-header-content">
+
+        <span class="page-eyebrow">FINANCIAL MANAGEMENT</span>
+
+        <h2>Payments</h2>
+
+        <p>
+            Monitor payment transactions and financial activity
+            across DairyMitr.
+        </p>
+
+    </div>
+
+    <div class="page-header-actions">
+
+        <span class="total-records-badge">
+
+            <i class="bi bi-wallet2"></i>
+
+            Payment Overview
+
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     PAYMENT STATISTICS
+===================================================== -->
+
+<div class="management-stats-grid">
+
+
+    <!-- TOTAL PAYMENTS -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-blue">
+
+            <i class="bi bi-receipt"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Total Payments</span>
+
+            <h3>{{ payment_stats.total | default(0) }}</h3>
+
+            <p>All payment records</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUCCESSFUL PAYMENTS -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-green">
+
+            <i class="bi bi-check-circle"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Successful</span>
+
+            <h3>{{ payment_stats.successful | default(0) }}</h3>
+
+            <p>Completed transactions</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- PENDING PAYMENTS -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-orange">
+
+            <i class="bi bi-clock-history"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Pending</span>
+
+            <h3>{{ payment_stats.pending | default(0) }}</h3>
+
+            <p>Awaiting confirmation</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- FAILED PAYMENTS -->
+
+    <div class="management-stat-card">
+
+        <div class="management-stat-icon icon-purple">
+
+            <i class="bi bi-x-circle"></i>
+
+        </div>
+
+        <div class="management-stat-info">
+
+            <span>Failed</span>
+
+            <h3>{{ payment_stats.failed | default(0) }}</h3>
+
+            <p>Unsuccessful transactions</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     REVENUE OVERVIEW
+===================================================== -->
+
+<div class="payment-revenue-panel">
+
+    <div class="payment-revenue-icon">
+
+        <i class="bi bi-currency-rupee"></i>
+
+    </div>
+
+    <div class="payment-revenue-info">
+
+        <span>Total Successful Payment Amount</span>
+
+        <h2>
+
+            ₹{{ "%.2f"|format(payment_stats.revenue | default(0, true) | float) }}
+
+        </h2>
+
+        <p>
+            Calculated from successful payment records only.
+        </p>
+
+    </div>
+
+    <div class="payment-revenue-decoration">
+
+        <i class="bi bi-graph-up-arrow"></i>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     TRANSACTION HISTORY
+===================================================== -->
+
+<div class="management-panel payment-records-panel">
+
+
+    <!-- PANEL HEADER -->
+
+    <div class="management-panel-header">
+
+        <div class="management-header-info">
+
+            <h3>Transaction History</h3>
+
+            <p>
+                View payment records associated with dairy accounts.
+            </p>
+
+        </div>
+
+        <span class="records-count">
+
+            <i class="bi bi-list-ul"></i>
+
+            {{ payments | length }} Records
+
+        </span>
+
+    </div>
+
+
+    <!-- SEARCH TOOLBAR -->
+
+    <div class="management-toolbar">
+
+        <form method="GET"
+              action="{{ url_for('payments') }}"
+              class="search-form"
+              id="paymentSearchForm">
+
+            <div class="search-input-wrapper">
+
+                <i class="bi bi-search search-icon"></i>
+
+                <input
+                    type="text"
+                    name="search"
+                    id="paymentSearchInput"
+                    class="search-input"
+                    placeholder="Search dairy, transaction ID..."
+                    value="{{ search or '' }}"
+                    autocomplete="off"
+                >
+
+                {% if search %}
+
+                    <a href="{{ url_for('payments') }}"
+                       class="search-clear-btn"
+                       title="Clear search">
+
+                        <i class="bi bi-x-lg"></i>
+
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+
+            <button type="submit" class="btn-search">
+
+                <i class="bi bi-search"></i>
+
+                Search
+
+            </button>
+
+        </form>
+
+
+        <div class="toolbar-right">
+
+            <span class="table-info-text">
+
+                <i class="bi bi-shield-lock"></i>
+
+                Read-only transactions
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- PAYMENT TABLE -->
+
+    {% if payments %}
+
+    <div class="table-responsive">
+
+        <table class="table management-table" id="paymentsTable">
+
+            <thead>
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Dairy Information</th>
+
+                    <th>Transaction ID</th>
+
+                    <th>Amount</th>
+
+                    <th>Payment Method</th>
+
+                    <th>Payment Date</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for payment in payments %}
+
+                <tr>
+
+
+                    <!-- SERIAL NUMBER -->
+
+                    <td>
+
+                        <span class="table-serial">
+
+                            {{ loop.index }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- DAIRY INFORMATION -->
+
+                    <td>
+
+                        <div class="dairy-table-info">
+
+                            <div class="dairy-table-avatar">
+
+                                <i class="bi bi-building"></i>
+
+                            </div>
+
+                            <div class="dairy-table-details">
+
+                                <strong>
+
+                                    {{ payment.dairy_name or 'Unknown Dairy' }}
+
+                                </strong>
+
+                                <span>
+
+                                    {{ payment.email or 'No email available' }}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- TRANSACTION ID -->
+
+                    <td>
+
+                        <span class="transaction-id">
+
+                            {{ payment.transaction_id or 'Not available' }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- AMOUNT -->
+
+                    <td>
+
+                        <strong class="payment-amount">
+
+                            {% if payment.amount is not none %}
+
+                                ₹{{ "%.2f"|format(payment.amount | float) }}
+
+                            {% else %}
+
+                                Not available
+
+                            {% endif %}
+
+                        </strong>
+
+                    </td>
+
+
+                    <!-- PAYMENT METHOD -->
+
+                    <td>
+
+                        <span class="payment-method">
+
+                            <i class="bi bi-credit-card"></i>
+
+                            {{ payment.payment_method or 'Not available' }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- PAYMENT DATE -->
+
+                    <td>
+
+                        <span class="subscription-date">
+
+                            {% if payment.payment_date %}
+
+                                {{ payment.payment_date }}
+
+                            {% else %}
+
+                                Not available
+
+                            {% endif %}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- STATUS -->
+
+                    <td>
+
+                        {% if payment.status == 'success' %}
+
+                            <span class="status-badge status-verified">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Successful
+
+                            </span>
+
+                        {% elif payment.status == 'pending' %}
+
+                            <span class="status-badge status-pending">
+
+                                <i class="bi bi-clock-fill"></i>
+
+                                Pending
+
+                            </span>
+
+                        {% elif payment.status == 'failed' %}
+
+                            <span class="status-badge status-unverified">
+
+                                <i class="bi bi-x-circle-fill"></i>
+
+                                Failed
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="status-badge status-unverified">
+
+                                {{ payment.status or 'Unknown' }}
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    {% else %}
+
+
+    <!-- EMPTY STATE -->
+
+    <div class="empty-state">
+
+        <div class="empty-icon">
+
+            <i class="bi bi-wallet2"></i>
+
+        </div>
+
+        <h4>No Payment Records</h4>
+
+        <p>
+
+            {% if search %}
+
+                No payment records match your search.
+
+            {% else %}
+
+                Payment transactions are not available yet.
+
+            {% endif %}
+
+        </p>
+
+
+        {% if search %}
+
+            <a href="{{ url_for('payments') }}"
+               class="btn-outline-primary">
+
+                <i class="bi bi-arrow-counterclockwise"></i>
+
+                Clear Search
+
+            </a>
+
+        {% endif %}
+
+    </div>
+
+
+    {% endif %}
+
+
+</div>
+
+
+<!-- =====================================================
+     PAYMENT INFORMATION NOTICE
+===================================================== -->
+
+<div class="management-notice">
+
+    <div class="notice-icon">
+
+        <i class="bi bi-info-circle"></i>
+
+    </div>
+
+    <div class="notice-content">
+
+        <strong>Payment Data Integration</strong>
+
+        <p>
+
+            Payment transactions and revenue statistics
+            require an integrated payment records database.
+            This page will display actual transaction data
+            after payment system integration.
+
+        </p>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

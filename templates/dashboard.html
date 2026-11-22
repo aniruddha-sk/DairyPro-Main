@@ -1,0 +1,770 @@
+
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block breadcrumb %}Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- =====================================================
+     DASHBOARD HEADER
+===================================================== -->
+
+<div class="page-header dashboard-header">
+
+    <div class="page-header-content">
+
+        <span class="page-eyebrow">OVERVIEW</span>
+
+        <h2>Dashboard</h2>
+
+        <p>
+            Welcome to DairyMitr Super Admin.
+            Here's what's happening across your platform.
+        </p>
+
+    </div>
+
+    <div class="dashboard-header-actions">
+
+        <div class="dashboard-date" id="dashboardDate">
+
+            <i class="bi bi-calendar3"></i>
+
+            <span id="currentDashboardDate">Today</span>
+
+        </div>
+
+        <button type="button"
+                class="btn-refresh"
+                id="refreshDashboardBtn"
+                title="Refresh dashboard">
+
+            <i class="bi bi-arrow-clockwise"></i>
+
+            <span>Refresh</span>
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     MAIN STATISTICS
+===================================================== -->
+
+<div class="dashboard-stats-grid">
+
+
+    <!-- TOTAL DAIRIES -->
+
+    <div class="dashboard-stat-card">
+
+        <div class="dashboard-stat-top">
+
+            <div class="dashboard-stat-icon icon-blue">
+                <i class="bi bi-building"></i>
+            </div>
+
+            <span class="stat-label">TOTAL DAIRIES</span>
+
+        </div>
+
+        <div class="dashboard-stat-body">
+
+            <h3>
+                {{ stats.total_dairies | default(0, true) }}
+            </h3>
+
+            <p>Registered dairy accounts</p>
+
+        </div>
+
+        <div class="dashboard-stat-footer">
+
+            <span class="stat-footer-icon">
+                <i class="bi bi-buildings"></i>
+            </span>
+
+            <span>Across the platform</span>
+
+        </div>
+
+    </div>
+
+
+    <!-- VERIFIED DAIRIES -->
+
+    <div class="dashboard-stat-card">
+
+        <div class="dashboard-stat-top">
+
+            <div class="dashboard-stat-icon icon-green">
+                <i class="bi bi-patch-check"></i>
+            </div>
+
+            <span class="stat-label">VERIFIED DAIRIES</span>
+
+        </div>
+
+        <div class="dashboard-stat-body">
+
+            <h3>
+                {{ stats.verified_dairies | default(0, true) }}
+            </h3>
+
+            <p>Verified accounts</p>
+
+        </div>
+
+        <div class="dashboard-stat-footer">
+
+            <span class="stat-footer-icon text-success">
+                <i class="bi bi-check-circle"></i>
+            </span>
+
+            <span>Account verification</span>
+
+        </div>
+
+    </div>
+
+
+    <!-- UNVERIFIED DAIRIES -->
+
+    <div class="dashboard-stat-card">
+
+        <div class="dashboard-stat-top">
+
+            <div class="dashboard-stat-icon icon-orange">
+                <i class="bi bi-exclamation-circle"></i>
+            </div>
+
+            <span class="stat-label">UNVERIFIED DAIRIES</span>
+
+        </div>
+
+        <div class="dashboard-stat-body">
+
+            <h3>
+                {{ stats.unverified_dairies | default(0, true) }}
+            </h3>
+
+            <p>Pending verification</p>
+
+        </div>
+
+        <div class="dashboard-stat-footer">
+
+            <span class="stat-footer-icon text-warning">
+                <i class="bi bi-clock"></i>
+            </span>
+
+            <span>Verification status</span>
+
+        </div>
+
+    </div>
+
+
+    <!-- TOTAL CUSTOMERS / VENDORS -->
+
+    <div class="dashboard-stat-card">
+
+        <div class="dashboard-stat-top">
+
+            <div class="dashboard-stat-icon icon-purple">
+                <i class="bi bi-people"></i>
+            </div>
+
+            <span class="stat-label">TOTAL CUSTOMERS</span>
+
+        </div>
+
+        <div class="dashboard-stat-body">
+
+            <h3>
+                {{ vendor_stats.total_vendors | default(0, true) }}
+            </h3>
+
+            <p>Registered milk vendors</p>
+
+        </div>
+
+        <div class="dashboard-stat-footer">
+
+            <span class="stat-footer-icon">
+                <i class="bi bi-person-check"></i>
+            </span>
+
+            <span>Across all dairies</span>
+
+        </div>
+
+    </div>
+
+
+    <!-- TOTAL STAFF -->
+
+    <div class="dashboard-stat-card">
+
+        <div class="dashboard-stat-top">
+
+            <div class="dashboard-stat-icon icon-cyan">
+                <i class="bi bi-person-badge"></i>
+            </div>
+
+            <span class="stat-label">TOTAL STAFF</span>
+
+        </div>
+
+        <div class="dashboard-stat-body">
+
+            <h3>
+                {{ staff_stats.total_staff | default(0, true) }}
+            </h3>
+
+            <p>Registered staff members</p>
+
+        </div>
+
+        <div class="dashboard-stat-footer">
+
+            <span class="stat-footer-icon text-success">
+                <i class="bi bi-person-check"></i>
+            </span>
+
+            <span>
+                {{ staff_stats.active_staff | default(0, true) }} active staff
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- TOTAL MILK COLLECTION -->
+
+    <div class="dashboard-stat-card">
+
+        <div class="dashboard-stat-top">
+
+            <div class="dashboard-stat-icon icon-teal">
+                <i class="bi bi-droplet-half"></i>
+            </div>
+
+            <span class="stat-label">TOTAL MILK COLLECTION</span>
+
+        </div>
+
+        <div class="dashboard-stat-body">
+
+            <h3>
+                {{ "%.2f"|format(milk_stats.total_milk | default(0, true) | float) }}
+            </h3>
+
+            <p>Litres collected overall</p>
+
+        </div>
+
+        <div class="dashboard-stat-footer">
+
+            <span class="stat-footer-icon text-success">
+                <i class="bi bi-droplet"></i>
+            </span>
+
+            <span>All collection records</span>
+
+        </div>
+
+    </div>
+
+
+    <!-- TODAY'S MILK COLLECTION -->
+
+    <div class="dashboard-stat-card highlight-stat-card">
+
+        <div class="dashboard-stat-top">
+
+            <div class="dashboard-stat-icon icon-blue">
+                <i class="bi bi-calendar-check"></i>
+            </div>
+
+            <span class="stat-label">TODAY'S COLLECTION</span>
+
+        </div>
+
+        <div class="dashboard-stat-body">
+
+            <h3>
+                {{ "%.2f"|format(today_stats.today_milk | default(0, true) | float) }}
+            </h3>
+
+            <p>Litres collected today</p>
+
+        </div>
+
+        <div class="dashboard-stat-footer">
+
+            <span class="stat-footer-icon">
+                <i class="bi bi-calendar2-check"></i>
+            </span>
+
+            <span>Today's total milk</span>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- =====================================================
+     CHARTS SECTION
+===================================================== -->
+
+<div class="dashboard-charts-grid">
+
+
+    <!-- MILK COLLECTION CHART -->
+
+    <div class="dashboard-panel milk-chart-panel">
+
+        <div class="dashboard-panel-header">
+
+            <div>
+
+                <h3>Milk Collection Overview</h3>
+
+                <p>Monthly milk collection across all dairies</p>
+
+            </div>
+
+            <div class="panel-icon">
+                <i class="bi bi-bar-chart-line"></i>
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-chart-container">
+
+            <canvas id="dashboardMilkChart"
+                    aria-label="Monthly milk collection chart"
+                    role="img">
+            </canvas>
+
+        </div>
+
+        <div class="chart-empty-state" id="dashboardMilkEmpty" hidden>
+
+            <i class="bi bi-bar-chart"></i>
+
+            <h5>No collection data available</h5>
+
+            <p>Milk collection statistics will appear here.</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- DAIRY VERIFICATION CHART -->
+
+    <div class="dashboard-panel verification-panel">
+
+        <div class="dashboard-panel-header">
+
+            <div>
+
+                <h3>Dairy Verification</h3>
+
+                <p>Account verification overview</p>
+
+            </div>
+
+            <div class="panel-icon">
+                <i class="bi bi-patch-check"></i>
+            </div>
+
+        </div>
+
+
+        <div class="verification-chart-container">
+
+            <canvas id="dairyVerificationChart"
+                    aria-label="Dairy verification chart"
+                    role="img">
+            </canvas>
+
+        </div>
+
+
+        <div class="verification-legend">
+
+            <div class="verification-legend-item">
+
+                <span class="legend-dot legend-verified"></span>
+
+                <span>Verified</span>
+
+                <strong>
+                    {{ stats.verified_dairies | default(0, true) }}
+                </strong>
+
+            </div>
+
+
+            <div class="verification-legend-item">
+
+                <span class="legend-dot legend-unverified"></span>
+
+                <span>Unverified</span>
+
+                <strong>
+                    {{ stats.unverified_dairies | default(0, true) }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- =====================================================
+     RECENT DAIRY REGISTRATIONS
+===================================================== -->
+
+<div class="dashboard-panel recent-dairies-panel">
+
+    <div class="dashboard-panel-header">
+
+        <div>
+
+            <h3>Recent Dairy Registrations</h3>
+
+            <p>Latest registered dairy accounts</p>
+
+        </div>
+
+
+        <a href="{{ url_for('dairies') }}"
+           class="view-all-link">
+
+            View All
+
+            <i class="bi bi-arrow-right"></i>
+
+        </a>
+
+    </div>
+
+
+    {% if recent_dairies %}
+
+    <div class="table-responsive">
+
+        <table class="table dashboard-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Dairy</th>
+
+                    <th>Email Address</th>
+
+                    <th>Phone</th>
+
+                    <th>Dairy Code</th>
+
+                    <th>Status</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for dairy in recent_dairies %}
+
+                <tr>
+
+                    <!-- DAIRY NAME -->
+
+                    <td>
+
+                        <div class="dairy-table-info">
+
+                            <div class="dairy-table-avatar">
+
+                                <i class="bi bi-building"></i>
+
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    {{ dairy.dairy_name or 'Unnamed Dairy' }}
+                                </strong>
+
+                                <span>
+                                    ID: {{ dairy.id }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- EMAIL -->
+
+                    <td>
+                        {{ dairy.email }}
+                    </td>
+
+
+                    <!-- PHONE -->
+
+                    <td>
+                        {{ dairy.phone or 'Not available' }}
+                    </td>
+
+
+                    <!-- DAIRY CODE -->
+
+                    <td>
+
+                        <span class="dairy-code">
+                            {{ dairy.dairy_code or 'N/A' }}
+                        </span>
+
+                    </td>
+
+
+                    <!-- STATUS -->
+
+                    <td>
+
+                        {% if dairy.is_verified %}
+
+                            <span class="status-badge status-verified">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Verified
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="status-badge status-unverified">
+
+                                <i class="bi bi-clock-fill"></i>
+
+                                Unverified
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- ACTION -->
+
+                    <td>
+
+                        <a href="{{ url_for('dairy_details', dairy_id=dairy.id) }}"
+                           class="table-action-btn"
+                           title="View dairy details"
+                           aria-label="View dairy details">
+
+                            <i class="bi bi-eye"></i>
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-state">
+
+        <div class="empty-icon">
+            <i class="bi bi-building"></i>
+        </div>
+
+        <h5>No dairy registrations found</h5>
+
+        <p>New dairy registrations will appear here.</p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- =====================================================
+     QUICK ACCESS
+===================================================== -->
+
+<div class="quick-access-section">
+
+    <div class="section-heading">
+
+        <div>
+
+            <h3>Quick Access</h3>
+
+            <p>Quickly navigate to important platform sections.</p>
+
+        </div>
+
+    </div>
+
+
+    <div class="quick-access-grid">
+
+
+        <a href="{{ url_for('dairies') }}"
+           class="quick-access-card">
+
+            <div class="quick-access-icon icon-blue">
+
+                <i class="bi bi-building"></i>
+
+            </div>
+
+            <div>
+
+                <h5>Dairy Management</h5>
+
+                <p>View all registered dairies</p>
+
+            </div>
+
+            <i class="bi bi-arrow-up-right quick-access-arrow"></i>
+
+        </a>
+
+
+        <a href="{{ url_for('users') }}"
+           class="quick-access-card">
+
+            <div class="quick-access-icon icon-purple">
+
+                <i class="bi bi-people"></i>
+
+            </div>
+
+            <div>
+
+                <h5>User Management</h5>
+
+                <p>Manage platform users</p>
+
+            </div>
+
+            <i class="bi bi-arrow-up-right quick-access-arrow"></i>
+
+        </a>
+
+
+        <a href="{{ url_for('analytics') }}"
+           class="quick-access-card">
+
+            <div class="quick-access-icon icon-green">
+
+                <i class="bi bi-graph-up-arrow"></i>
+
+            </div>
+
+            <div>
+
+                <h5>Platform Analytics</h5>
+
+                <p>Explore collection statistics</p>
+
+            </div>
+
+            <i class="bi bi-arrow-up-right quick-access-arrow"></i>
+
+        </a>
+
+
+        <a href="{{ url_for('activity_logs') }}"
+           class="quick-access-card">
+
+            <div class="quick-access-icon icon-orange">
+
+                <i class="bi bi-clock-history"></i>
+
+            </div>
+
+            <div>
+
+                <h5>Activity Logs</h5>
+
+                <p>View platform activity</p>
+
+            </div>
+
+            <i class="bi bi-arrow-up-right quick-access-arrow"></i>
+
+        </a>
+
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     DASHBOARD DATA FOR JAVASCRIPT
+===================================================== -->
+
+<script type="application/json" id="dashboardChartData">
+{{ {
+    "milk": [],
+    "verification": [
+        stats.verified_dairies | default(0, true) | int,
+        stats.unverified_dairies | default(0, true) | int
+    ]
+} | tojson }}
+</script>
+
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script
+    src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js">
+</script>
+
+{% endblock %}
